@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import  *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.views import logout
 
 
 def home(request):
@@ -60,8 +61,9 @@ def hospital_login(request):
     else:
         form = HospitalLoginForm()
 
+    success_redirect_url = request.GET.get('next', '/hospital/home')
+
     if request.user.is_authenticated():
-        success_redirect_url = request.GET.get('next', '/hospital/home')
         return HttpResponseRedirect(success_redirect_url)
 
     if request.method == "POST":
@@ -83,6 +85,13 @@ def hospital_login(request):
                 return HttpResponseRedirect(success_redirect_url)
     else:
         return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': False})
+
+def hospital_logout(request):
+    logout(request)
+    redirect_to = request.GET.get(next, '/hospital/login')
+    print("\n>>>>>>logging out. redirecting to: %s" % redirect_to)
+
+    return HttpResponseRedirect(redirect_to)
 
 def hospital_register(request):
     if request.method == "POST":
