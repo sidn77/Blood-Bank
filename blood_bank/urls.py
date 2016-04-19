@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name='home'),
     url(r'^donor/', include('vampire.urls', namespace='donor')),
+    url(r'^hospital/login', views.hospital_login, name="hospital_login"),
 ]

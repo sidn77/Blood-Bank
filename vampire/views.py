@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 def home(request):
     return render(request, 'vampire/home.html')
 
+# DONOR VIEWS ---
 def donor_home(request):
     return render(request, 'donor/donor_home.html')
 
@@ -35,4 +36,14 @@ def donor_edit(request, donor_id):
         form = DonorForm(instance=donor)
     return render(request, 'donor/donor_edit.html', {'form': DonorForm})
 
-    
+
+# HOSPITAL VIEWS
+def hospital_login(request):
+    if request.method == "POST":
+        form = HospitalLoginForm(request.POST)
+
+        if form.is_valid():
+            return redirect('hospital/hospital_home', {'form': form})
+    else:
+        form = HospitalLoginForm()
+    return render(request, 'hospital/hospital_login.html')
