@@ -55,10 +55,16 @@ def donor_edit(request, donor_id):
 
 # HOSPITAL VIEWS
 def hospital_login(request):
-
     if request.method == "POST":
         form = HospitalLoginForm(request.POST)
+    else:
+        form = HospitalLoginForm()
 
+    if request.user.is_authenticated():
+        success_redirect_url = request.GET.get('next', '/hospital/home')
+        return HttpResponseRedirect(success_redirect_url)
+
+    if request.method == "POST":
         if not form.is_valid():
             print(">>>>>>>>>>form is invalid")
             return render_to_response(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
@@ -71,12 +77,11 @@ def hospital_login(request):
                 print(">>>>>>>>>user is wrong")
                 return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
             else:
+                request.session['id'] = user.id
                 login(request, user)
-                success_redirect_url = request.GET.get('next', '')
                 print(">>>>>>>>success. Redirecting to: %s" % success_redirect_url)
                 return HttpResponseRedirect(success_redirect_url)
     else:
-        form = HospitalLoginForm()
         return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': False})
 
 def hospital_register(request):
