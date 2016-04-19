@@ -4,12 +4,14 @@ from .models import *
 from .forms import *
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
     return render(request, 'vampire/home.html')
 
 # DONOR VIEWS ---
+@login_required(login_url='/donor/login')
 def donor_home(request):
     return render(request, 'donor/donor_home.html')
 
@@ -37,7 +39,7 @@ def donor_new(request):
     else:
         dform = DonorForm()
         aform = AddressForm()
-    return render(request, 'donor/donor_edit.html', {'donor_form': dform, 'address_form': aform})
+    return render(request, 'donor/donor_register.html', {'donor_form': dform, 'address_form': aform})
 
 def donor_edit(request, donor_id):
     donor = get_object_or_404(Donor, pk=donor_id)
@@ -48,7 +50,10 @@ def donor_edit(request, donor_id):
             return redirect('donor_detail', donor_id=donor.pk)
     else:
         form = DonorForm(instance=donor)
-    return render(request, 'donor/donor_edit.html', {'form': DonorForm})
+    return render(request, 'donor/donor_register.html', {'form': DonorForm})
+
+def donor_login(request):
+    return render(request, 'donor/donor_login.html')
 
 # HOSPITAL VIEWS
 def hospital_login(request):
@@ -72,6 +77,7 @@ def hospital_register(request):
 
     return render(request, 'hospital/hospital_register.html', {'form': form})
 
+@login_required(login_url='/hospital/login')
 def hospital_home(request):
-    return render(request, 'hospital/home')
+    return render(request, 'hospital/hospital_home.html')
 
