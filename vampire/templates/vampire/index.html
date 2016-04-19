@@ -1,5 +1,6 @@
 {% extends 'vampire/base.html' %}
 
+{% load bootstrap3 %}
 {% block content %}
 {% include 'vampire/not_logged_in_navbar.html' %}
 
@@ -17,7 +18,9 @@
         </p>
 
         <div class="login-register-container">
-            <button type="button" class="btn btn-default register-btn" onclick="location.href='{% url 'hospital_register' %}'">Register a Hospital</button>
+            <button type="button" class="btn btn-info register-btn" onclick="location.href='{% url 'hospital_register' %}'">
+                Register a Hospital {% bootstrap_icon "heart" %}
+            </button>
         </div>
     </div>
 
@@ -30,11 +33,11 @@
         </div>
 
         <p class="lead">
-            Want to become a registered blood bank to gain access to our network?
+            Want to become a registered donor to gain access to our network of bloood banks to donate to?
         </p>
 
         <div class="login-register-container">
-            <button type="button" class="btn btn-default register-btn"> Register a Blood Bank</button>
+            <button type="button" class="btn btn-success register-btn"> Register a Donor {% bootstrap_icon "user" %}</button>
         </div>
     </div>
 </div>
