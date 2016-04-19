@@ -13,13 +13,13 @@
         <!--collapsible navbar section-->
         <div class="collapse navbar-collapse" id="navbar-collapse-region">
             <ul class="nav navbar-nav">
-                <li><a href="#">Link</a></li>
+                <p class="navbar-text">Hospital {{request.session.hospital_name}}</p>
             </ul>
 
             <ul class="navbar-form navbar-right">
                 <div class="form-group">
                     <a class="btn btn-default" href="{%url 'hospital_logout' %}">
-                        Hospital Logout {% bootstrap_icon "log-out" %}
+                        Logout {% bootstrap_icon "log-out" %}
                     </a>
                 </div>
             </ul>

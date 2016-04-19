@@ -68,7 +68,6 @@ def hospital_login(request):
 
     if request.method == "POST":
         if not form.is_valid():
-            print(">>>>>>>>>>form is invalid")
             return render_to_response(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
         else:
             username = form.cleaned_data['username']
@@ -76,12 +75,11 @@ def hospital_login(request):
             user = authenticate(username=username, password=password)
 
             if user is None:
-                print(">>>>>>>>>user is wrong")
                 return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
             else:
                 request.session['id'] = user.id
+                request.session['hospital_name'] = form.instance.username
                 login(request, user)
-                print(">>>>>>>>success. Redirecting to: %s" % success_redirect_url)
                 return HttpResponseRedirect(success_redirect_url)
     else:
         return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': False})
@@ -89,21 +87,18 @@ def hospital_login(request):
 def hospital_logout(request):
     logout(request)
     redirect_to = request.GET.get(next, '/hospital/login')
-    print("\n>>>>>>logging out. redirecting to: %s" % redirect_to)
 
     return HttpResponseRedirect(redirect_to)
 
 def hospital_register(request):
     if request.method == "POST":
         form = HospitalRegisterForm(request.POST)
-        print("received form:\n%s" % form)
-        print("checking if form is valid")
 
         if form.is_valid():
             print("form is valid")
             hospital_instance = form.save();
-            request.session['hospital_id'] = hospital_instance.hid
-            return redirect('/hospital/home', {'hospital': hospital_instance})
+            request.session['hospital'] = hospital_instance
+            return redirect('hospital_login')
         else:
            return render_to_response('hospital/hospital_register.html', {'form': form})
     else:
