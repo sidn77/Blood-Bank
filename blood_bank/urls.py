@@ -21,4 +21,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.home, name='home'),
     url(r'^donor/', include('vampire.urls', namespace='donor')),
+    url(r'^hospital/login', views.hospital_login, name="hospital_login"),
+    url(r'^hospital/register', views.hospital_register, name="hospital_register"),
+    url(r'^hospital/home', views.hospital_home, name="hospital_home"),
+    url('^accounts/', include('django.contrib.auth.urls')),
 ]

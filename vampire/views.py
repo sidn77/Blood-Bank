@@ -1,13 +1,15 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, render_to_response
 from django.utils import timezone
 from .models import *
 from .forms import *
 from django.shortcuts import redirect
-from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+
 
 def home(request):
     return render(request, 'vampire/home.html')
 
+# DONOR VIEWS ---
 def donor_home(request):
     return render(request, 'donor/donor_home.html')
 
@@ -48,17 +50,28 @@ def donor_edit(request, donor_id):
         form = DonorForm(instance=donor)
     return render(request, 'donor/donor_edit.html', {'form': DonorForm})
 
-def donor_login(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(username=username, password=username)
-    if user is not None:
-        # the password verified for the user
-        if user.is_active:
-            redirect('donor_home')
+# HOSPITAL VIEWS
+def hospital_login(request):
+    return render(request, 'hospital/hospital_login.html')
+
+def hospital_register(request):
+    if request.method == "POST":
+        form = HospitalRegisterForm(request.POST)
+        print("received form:\n%s" % form)
+        print("checking if form is valid")
+
+        if form.is_valid():
+            print("form is valid")
+            hospital_instance = form.save();
+            request.session['hospital_id'] = hospital_instance.hid
+            return redirect('/hospital/home', {'hospital': hospital_instance})
         else:
-            print("The password is valid, but the account has been disabled!")
+           return render_to_response('hospital/hospital_register.html', {'form': form})
     else:
-        # the authentication system was unable to verify the username and password
-        print("The username and password were incorrect.")
-    
+        form = HospitalRegisterForm()
+
+    return render(request, 'hospital/hospital_register.html', {'form': form})
+
+def hospital_home(request):
+    return render(request, 'hospital/home')
+
