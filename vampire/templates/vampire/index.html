@@ -18,7 +18,9 @@
         </p>
 
         <div class="login-register-container">
-            <button type="button" class="btn btn-info register-btn" onclick="location.href='{% url 'hospital_register' %}'">
+            <button type="button"
+                    class="btn btn-info register-btn"
+                    onclick="location.href='{% url 'hospital_register' %}'">
                 Register a Hospital {% bootstrap_icon "heart" %}
             </button>
         </div>
@@ -37,14 +39,13 @@
         </p>
 
         <div class="login-register-container">
-            <button type="button" class="btn btn-success register-btn"> Register a Donor {% bootstrap_icon "user" %}</button>
+            <button type="button"
+                    class="btn btn-success register-btn"
+            onclick="location.href='{%url 'donor_register' %}'"> Register a Donor {% bootstrap_icon "user" %}</button>
         </div>
     </div>
 </div>
-<div id="footer">
-    <div class="container">
-        <p class="text-muted credit"> Bhat Inc.</p>
-    </div>
-</div>
+
+{% include 'vampire/footer.html' %}
 
 {% endblock %}

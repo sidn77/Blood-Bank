@@ -7,7 +7,7 @@
 <div id="wrap">
     <div class="page-header login-container">
         <h1>
-            Hospital Login
+            Donor Login
         </h1>
 
         {%if invalid %}
@@ -19,7 +19,7 @@
         {% if next %}
             <form action="/hospital/login/?next={{next}}" method="POST" class="post-form">
         {%else%}
-            <form action="/hospital/login/?next=/hospital/home" method="POST" class="post-form">
+            <form action="/hospital/login/?next=/donor/home" method="POST" class="post-form">
                 
         {% endif %}
                 {% csrf_token %}
@@ -33,4 +33,5 @@
     </div>
 </div>
 {% include 'vampire/footer.html' %}
+
 {% endblock %}

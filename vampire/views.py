@@ -9,8 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import logout
 
-
-def home(request):
+def index(request):
     return render(request, 'vampire/index.html')
 
 
@@ -19,39 +18,59 @@ def donor_home(request):
     return render(request, 'donor/donor_home.html')
 
 
-def donor_new(request):
+def donor_login(request):
     if request.method == "POST":
-        dform = DonorForm(request.POST)
-        aform = AddressForm(request.POST)
-        if dform.is_valid() and aform.is_valid():
-            donor = dform.save(commit=False)
-            address = aform.save(commit=False)
-            donor.name = request.user.id
-            donor.age = request.user.id
-            donor.blood_type = request.user.id
-            address.city = request.user.id
-            address.state = request.user.id
-            address.country = request.user.id
-            address.aid = Address.objects.get(aid=' ')
-            address.save()
-            donor.save()
-            return redirect('donor_home', donor_id=donor.pk)
+        form = DonorLoginForm(request.POST)
     else:
-        dform = DonorForm()
-        aform = AddressForm()
-    return render(request, 'donor/donor_edit.html', {'donor_form': dform, 'address_form': aform})
+        form = DonorLoginForm()
 
+    success_redirect_url = request.GET.get('next', '/donor/home')
 
-def donor_edit(request, donor_id):
-    donor = get_object_or_404(Donor, pk=donor_id)
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(success_redirect_url)
+
+    if request.method =="GET":
+        return render(request, 'donor/donor_login.html', {'form': form, 'invalid': False})
+    else:
+        if not form.is_valid():
+            return render_to_response(request, 'donor/donor_login.html', {'form': form, 'invalid': True})
+        else:
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+
+            if user is None:
+                return render(request, 'donor/donor_login.html', {'form': form, 'invalid': True})
+            else:
+                request.session['id'] = user.id
+                request.session['donor_name'] = form.instance.name
+                login(request, user)
+                return HttpResponseRedirect(success_redirect_url)
+
+def donor_register(request):
     if request.method == "POST":
-        form = DonorForm(request.POST, instance=donor)
+        form = DonorRegisterForm(request.POST)
+
         if form.is_valid():
-            form.save()
-            return redirect('donor_detail', donor_id=donor.pk)
+            donor_instance = form.save();
+            return redirect('donor_login')
+        else:
+            return render_to_response('donor/donor_register.html', {'form': form})
     else:
-        form = DonorForm(instance=donor)
-    return render(request, 'donor/donor_edit.html', {'form': DonorForm})
+        form = HospitalRegisterForm()
+
+    return render(request, 'donor/donor_register.html', {'form': form})
+# def donor_edit(request, donor_id):
+#     donor = get_object_or_404(Donor, pk=donor_id)
+#     if request.method == "POST":
+#         form = DonorForm(request.POST, instance=donor)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('donor_detail', donor_id=donor.pk)
+#     else:
+#         form = DonorForm(instance=donor)
+#     return render(request, 'donor/donor_edit.html', {'form': DonorForm})
+
 
 
 # HOSPITAL VIEWS
@@ -66,7 +85,9 @@ def hospital_login(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect(success_redirect_url)
 
-    if request.method == "POST":
+    if request.method =="GET":
+        return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': False})
+    else:
         if not form.is_valid():
             return render_to_response(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
         else:
@@ -78,11 +99,10 @@ def hospital_login(request):
                 return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
             else:
                 request.session['id'] = user.id
-                request.session['hospital_name'] = form.instance.username
+                request.session['hospital_name'] = form.instance.name
                 login(request, user)
                 return HttpResponseRedirect(success_redirect_url)
-    else:
-        return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': False})
+
 
 def hospital_logout(request):
     logout(request)
@@ -97,7 +117,6 @@ def hospital_register(request):
         if form.is_valid():
             print("form is valid")
             hospital_instance = form.save();
-            request.session['hospital'] = hospital_instance
             return redirect('hospital_login')
         else:
            return render_to_response('hospital/hospital_register.html', {'form': form})

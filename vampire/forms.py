@@ -2,11 +2,16 @@ from django import forms
 from .forms import *
 from .models import *
 
-class DonorForm(forms.ModelForm):
+class DonorRegisterForm(forms.ModelForm):
+    class Meta:
+        model = Hospital
+        fields = '__all__'
+        exclude = ['did']
+
+class DonorLoginForm(forms.ModelForm):
     class Meta:
         model = Donor
-        fields = '__all__'
-        exclude = ['aid']
+        fields = ['username', 'password']
 
 class AddressForm(forms.ModelForm):
         class Meta:
