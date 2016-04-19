@@ -1,8 +1,3 @@
 from django import forms
-from .models import *
+from .forms import *
 
-class DonorForm(forms.ModelForm):
-
-    class Meta:
-        model = Donor
-        fields = ('name', 'age', 'blood_type')
