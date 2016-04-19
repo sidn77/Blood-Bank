@@ -13,9 +13,8 @@ class AddressForm(forms.ModelForm):
             model = Address
             fields = '__all__'
             exclude = ['aid']
->>>>>>> 7605155278005961087262716cc72ca727a8bd4e
 
-class HospitalLoginForm(ModelForm):
+class HospitalLoginForm(forms.ModelForm):
     class Meta:
         model = Hospital
         fields = ['username', 'password']
