@@ -1,0 +1,28 @@
+{% extends 'vampire/base.html' %}
+{% block content %}
+{% load bootstrap3 %}
+
+<div id="wrap">
+    <div class="page-header login-container">
+        <h1>
+            Hospital Register
+        </h1>
+
+        <form method="POST" class="post-form">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon "star" %} Submit
+            </button>
+            {% endbuttons %}
+        </form>
+    </div>
+</div>
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit"> Bhat Inc.</p>
+    </div>
+</div>
+
+{% endblock %}

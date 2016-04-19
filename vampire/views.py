@@ -3,6 +3,8 @@ from django.utils import timezone
 from .models import *
 from .forms import *
 from django.shortcuts import redirect
+from django.contrib.auth.models import User
+from django.shortcuts import  *
 
 def home(request):
     return render(request, 'vampire/home.html')
@@ -47,11 +49,25 @@ def donor_edit(request, donor_id):
 
 # HOSPITAL VIEWS
 def hospital_login(request):
+    return render(request, 'hospital/hospital_login.html')
+
+def hospital_register(request):
     if request.method == "POST":
-        form = HospitalLoginForm(request.POST)
+        form = HospitalRegisterForm(request.POST)
+        print("received form:\n%s" % form)
+        print("checking if form is valid")
 
         if form.is_valid():
-            return redirect('hospital/hospital_home', {'form': form})
+            print("form is valid")
+            hospital_instance = form.save();
+            request.session['hospital_id'] = hospital_instance.hid
+            return redirect('/hospital/home', {'hospital': hospital_instance})
+        else:
+           return render_to_response('hospital/hospital_register.html', {'form': form})
     else:
-        form = HospitalLoginForm()
-    return render(request, 'hospital/hospital_login.html')
+        form = HospitalRegisterForm()
+
+    return render(request, 'hospital/hospital_register.html', {'form': form})
+
+def hospital_home(request):
+    return render(request, 'hospital/home')

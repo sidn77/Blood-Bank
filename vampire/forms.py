@@ -14,7 +14,8 @@ class AddressForm(forms.ModelForm):
             fields = '__all__'
             exclude = ['aid']
 
-class HospitalLoginForm(forms.ModelForm):
+class HospitalRegisterForm(forms.ModelForm):
     class Meta:
         model = Hospital
-        fields = ['username', 'password']
+        fields = '__all__'
+        exclude = ['hid']
