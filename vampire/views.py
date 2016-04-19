@@ -13,17 +13,25 @@ def donor_home(request):
 
 def donor_new(request):
     if request.method == "POST":
-        form = DonorForm(request.POST)
-        if form.is_valid():
-            donor = form.save(commit=False)
-            donor.name = request.user
-            donor.age = request.user
-            donor.blood_type = request.user
+        dform = DonorForm(request.POST)
+        aform = AddressForm(request.POST)
+        if dform.is_valid() and aform.is_valid():
+            donor = dform.save(commit=False)
+            address = aform.save(commit=False)
+            donor.name = request.user.id
+            donor.age = request.user.id
+            donor.blood_type = request.user.id
+            address.city = request.user.id
+            address.state = request.user.id
+            address.country = request.user.id
+            address.aid = Address.objects.get(aid=' ')
+            address.save()
             donor.save()
             return redirect('donor_home', donor_id=donor.pk)
     else:
-        form = DonorForm()
-    return render(request, 'donor/donor_edit.html', {'form': form})
+        dform = DonorForm()
+        aform = AddressForm()
+    return render(request, 'donor/donor_edit.html', {'donor_form': dform, 'address_form': aform})
 
 def donor_edit(request, donor_id):
     donor = get_object_or_404(Donor, pk=donor_id)

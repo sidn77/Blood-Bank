@@ -4,7 +4,8 @@
 
 <h1>New Donor</h1>
     <form method="POST" class="post-form">{% csrf_token %}
-        {{ form.as_p }}
+        {{ donor_form.as_p }}
+        {{ address_form.as_p }}
         <button type="submit" class="save btn btn-default">Save</button>
     </form>
 
