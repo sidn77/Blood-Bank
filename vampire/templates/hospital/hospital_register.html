@@ -3,9 +3,32 @@
 {% load bootstrap3 %}
 {% include 'vampire/not_logged_in_navbar.html' %}
 
+
+<style>
+    body {
+        background-color: #45C3D2 !important;
+        color: #FFFFFF !important;
+    }
+
+    h1, h2, h3, h4, h5, label {
+        color: #ffffff;
+    }
+
+    .btn#register{
+        border: 1px solid #efefef;
+        background-color: rgba(0, 0, 0, 0);
+        color: #ffffff;
+    }
+
+    .btn:hover {
+        background-color: rgba(255, 255, 255, 1);
+
+    }
+</style>
+
 <div id="wrap">
-    <div class="page-header login-container">
-        <h1>
+    <div class="login-container">
+        <h1 class="page-header">
             Hospital Registration
         </h1>
 
