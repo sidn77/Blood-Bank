@@ -11,7 +11,7 @@ from django.contrib.auth.views import logout
 
 
 def home(request):
-    return render(request, 'vampire/home.html')
+    return render(request, 'vampire/index.html')
 
 
 # DONOR VIEWS ---
