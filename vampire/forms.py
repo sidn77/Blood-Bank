@@ -19,3 +19,8 @@ class HospitalRegisterForm(forms.ModelForm):
         model = Hospital
         fields = '__all__'
         exclude = ['hid']
+
+class HospitalLoginForm(forms.ModelForm):
+    class Meta:
+        model = Hospital
+        fields = ['username', 'password']
