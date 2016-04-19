@@ -5,13 +5,18 @@ from .forms import *
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.shortcuts import  *
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
+
 
 def home(request):
     return render(request, 'vampire/home.html')
 
+
 # DONOR VIEWS ---
 def donor_home(request):
     return render(request, 'donor/donor_home.html')
+
 
 def donor_new(request):
     if request.method == "POST":
@@ -35,6 +40,7 @@ def donor_new(request):
         aform = AddressForm()
     return render(request, 'donor/donor_edit.html', {'donor_form': dform, 'address_form': aform})
 
+
 def donor_edit(request, donor_id):
     donor = get_object_or_404(Donor, pk=donor_id)
     if request.method == "POST":
@@ -49,7 +55,29 @@ def donor_edit(request, donor_id):
 
 # HOSPITAL VIEWS
 def hospital_login(request):
-    return render(request, 'hospital/hospital_login.html')
+
+    if request.method == "POST":
+        form = HospitalLoginForm(request.POST)
+
+        if not form.is_valid():
+            print(">>>>>>>>>>form is invalid")
+            return render_to_response(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
+        else:
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+
+            if user is None:
+                print(">>>>>>>>>user is wrong")
+                return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
+            else:
+                login(request, user)
+                success_redirect_url = request.GET.get('next', '')
+                print(">>>>>>>>success. Redirecting to: %s" % success_redirect_url)
+                return HttpResponseRedirect(success_redirect_url)
+    else:
+        form = HospitalLoginForm()
+        return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': False})
 
 def hospital_register(request):
     if request.method == "POST":
@@ -69,5 +97,6 @@ def hospital_register(request):
 
     return render(request, 'hospital/hospital_register.html', {'form': form})
 
+@login_required(login_url='/hospital/login')
 def hospital_home(request):
-    return render(request, 'hospital/home')
+    return render(request, 'hospital/hospital_home.html')
