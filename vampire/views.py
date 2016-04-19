@@ -3,6 +3,7 @@ from django.utils import timezone
 from .models import *
 from .forms import *
 from django.shortcuts import redirect
+from django.contrib.auth import authenticate
 
 def home(request):
     return render(request, 'vampire/home.html')
@@ -15,18 +16,22 @@ def donor_new(request):
         dform = DonorForm(request.POST)
         aform = AddressForm(request.POST)
         if dform.is_valid() and aform.is_valid():
-            donor = dform.save(commit=False)
             address = aform.save(commit=False)
-            donor.name = request.user.id
-            donor.age = request.user.id
-            donor.blood_type = request.user.id
-            address.city = request.user.id
-            address.state = request.user.id
-            address.country = request.user.id
-            address.aid = Address.objects.get(aid=' ')
+            data = aform.cleaned_data
+            address.city = data['city']
+            address.state = data['state']
+            address.country = data['country']
             address.save()
+            donor = dform.save(commit=False)
+            data = dform.cleaned_data
+            donor.username = data['username']
+            donor.password = data['password']
+            donor.name = data['name']
+            donor.age = data['age']
+            donor.blood_type = data['blood_type']
+            donor.aid = Address.objects.latest('aid')
             donor.save()
-            return redirect('donor_home', donor_id=donor.pk)
+            return redirect('/donor_home/')
     else:
         dform = DonorForm()
         aform = AddressForm()
@@ -43,4 +48,17 @@ def donor_edit(request, donor_id):
         form = DonorForm(instance=donor)
     return render(request, 'donor/donor_edit.html', {'form': DonorForm})
 
+def donor_login(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=username)
+    if user is not None:
+        # the password verified for the user
+        if user.is_active:
+            redirect('donor_home')
+        else:
+            print("The password is valid, but the account has been disabled!")
+    else:
+        # the authentication system was unable to verify the username and password
+        print("The username and password were incorrect.")
     
