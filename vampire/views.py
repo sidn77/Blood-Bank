@@ -19,7 +19,7 @@ def donor_new(request):
             donor.age = request.user
             donor.blood_type = request.user
             donor.save()
-            return redirect('donor_detail', donor_id=donor.pk)
+            return redirect('donor_home', donor_id=donor.pk)
     else:
         form = DonorForm()
     return render(request, 'donor/donor_edit.html', {'form': form})
