@@ -14,6 +14,7 @@ def index(request):
 
 
 # DONOR VIEWS ---
+@login_required(login_url='/donor/login')
 def donor_home(request):
     return render(request, 'donor/donor_home.html')
 
@@ -57,20 +58,9 @@ def donor_register(request):
         else:
             return render_to_response('donor/donor_register.html', {'form': form})
     else:
-        form = HospitalRegisterForm()
+        form = DonorRegisterForm()
 
     return render(request, 'donor/donor_register.html', {'form': form})
-# def donor_edit(request, donor_id):
-#     donor = get_object_or_404(Donor, pk=donor_id)
-#     if request.method == "POST":
-#         form = DonorForm(request.POST, instance=donor)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('donor_detail', donor_id=donor.pk)
-#     else:
-#         form = DonorForm(instance=donor)
-#     return render(request, 'donor/donor_edit.html', {'form': DonorForm})
-
 
 
 # HOSPITAL VIEWS

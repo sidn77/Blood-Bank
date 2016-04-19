@@ -4,7 +4,7 @@ from .models import *
 
 class DonorRegisterForm(forms.ModelForm):
     class Meta:
-        model = Hospital
+        model = Donor
         fields = '__all__'
         exclude = ['did']
 
