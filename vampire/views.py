@@ -2,19 +2,13 @@ from django.shortcuts import render, get_object_or_404, render_to_response
 from django.utils import timezone
 from .models import *
 from .forms import *
-from django.shortcuts import redirect
+from django.shortcuts import redirect, HttpResponseRedirect
 from django.contrib.auth.models import User
-<<<<<<< HEAD
 from django.contrib.auth.decorators import login_required
-
-||||||| merged common ancestors
-from django.shortcuts import  *
-=======
 from django.shortcuts import  *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 
->>>>>>> origin/master
 
 def home(request):
     return render(request, 'vampire/home.html')
