@@ -17,7 +17,6 @@ def index(request):
 def donor_home(request):
     return render(request, 'donor/donor_home.html')
 
-
 def donor_register(request):
     if request.method == "POST":
         form = DonorRegisterForm(request.POST)
@@ -28,8 +27,9 @@ def donor_register(request):
         else:
             return render_to_response('donor/donor_register.html', {'form': form})
     else:
-        form = DonorForm(instance=donor)
-    return render(request, 'donor/donor_register.html', {'form': DonorForm})
+        form = DonorRegisterForm()
+
+    return render(request, 'donor/donor_register.html', {'form': form})
 
 def donor_login(request):
     if request.method == "POST":
@@ -60,8 +60,32 @@ def donor_login(request):
                 login(request, user)
                 return HttpResponseRedirect(success_redirect_url)
 
+def donor_logout(request):
+    logout(request)
+    redirect_to = request.GET.get(next, '/donor/login')
 
-# HOSPITAL VIEWS
+    return HttpResponseRedirect(redirect_to)
+
+# HOSPITAL VIEWS ---
+@login_required(login_url='/hospital/login')
+def hospital_home(request):
+    return render(request, 'hospital/hospital_home.html')
+
+def hospital_register(request):
+    if request.method == "POST":
+        form = HospitalRegisterForm(request.POST)
+
+        if form.is_valid():
+            print("form is valid")
+            hospital_instance = form.save();
+            return redirect('hospital_login')
+        else:
+           return render_to_response('hospital/hospital_register.html', {'form': form})
+    else:
+        form = HospitalRegisterForm()
+
+    return render(request, 'hospital/hospital_register.html', {'form': form})
+
 def hospital_login(request):
     if request.method == "POST":
         form = HospitalLoginForm(request.POST)
@@ -98,23 +122,8 @@ def hospital_logout(request):
 
     return HttpResponseRedirect(redirect_to)
 
-def hospital_register(request):
-    if request.method == "POST":
-        form = HospitalRegisterForm(request.POST)
 
-        if form.is_valid():
-            print("form is valid")
-            hospital_instance = form.save();
-            return redirect('hospital_login')
-        else:
-           return render_to_response('hospital/hospital_register.html', {'form': form})
-    else:
-        form = HospitalRegisterForm()
 
-    return render(request, 'hospital/hospital_register.html', {'form': form})
 
-@login_required(login_url='/hospital/login')
-def hospital_home(request):
-    return render(request, 'hospital/hospital_home.html')
 
 

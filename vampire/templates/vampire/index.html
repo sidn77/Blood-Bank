@@ -1,5 +1,3 @@
-{% extends 'vampire/base.html' %}
-
 {% load bootstrap3 %}
 {% block content %}
 {% include 'vampire/not_logged_in_navbar.html' %}
@@ -39,15 +37,9 @@
         </p>
 
         <div class="login-register-container">
-<<<<<<< HEAD:vampire/templates/vampire/home.html
-            <button type="button" class="btn btn-default register-btn" onclick="location.href='{% url 'donor:donor_new' %}'">Register a Donor</button>
-||||||| merged common ancestors
-            <button type="button" class="btn btn-default register-btn"> Register a Blood Bank</button>
-=======
             <button type="button"
                     class="btn btn-success register-btn"
             onclick="location.href='{%url 'donor_register' %}'"> Register a Donor {% bootstrap_icon "user" %}</button>
->>>>>>> de51d6b10f9141c0cf4849f593c567309f97ca27:vampire/templates/vampire/index.html
         </div>
     </div>
 </div>
