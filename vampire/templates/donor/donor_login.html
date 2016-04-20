@@ -17,9 +17,9 @@
 
         {%endif%}
         {% if next %}
-            <form action="/hospital/login/?next={{next}}" method="POST" class="post-form">
+            <form action="/donor/login/?next={{next}}" method="POST" class="post-form">
         {%else%}
-            <form action="/hospital/login/?next=/donor/home" method="POST" class="post-form">
+            <form action="/donor/login/?next=/donor/home" method="POST" class="post-form">
                 
         {% endif %}
                 {% csrf_token %}

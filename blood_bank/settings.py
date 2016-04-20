@@ -75,6 +75,7 @@ WSGI_APPLICATION = 'blood_bank.wsgi.application'
 
 
 AUTHENTICATION_BACKENDS = [
+
     'vampire.auth.HospitalAuthBackend',
     'vampire.auth.DonorAuthBackend'
 ]

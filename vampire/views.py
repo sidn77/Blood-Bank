@@ -4,6 +4,8 @@ from .models import *
 from .forms import *
 from django.contrib.auth.models import User
 from django.shortcuts import *
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import logout
@@ -53,7 +55,7 @@ def donor_login(request):
             user = authenticate(username=username, password=password)
 
             if user is None:
-                return render(request, 'donor/donor_login.html', {'form': form, 'invalid': True})
+                return HttpResponseRedirect(reverse('hospital_login'), {'form': form, 'invalid': True})
             else:
                 request.session['id'] = user.id
                 request.session['donor_name'] = form.instance.name
@@ -101,14 +103,14 @@ def hospital_login(request):
         return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': False})
     else:
         if not form.is_valid():
-            return render_to_response(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
+            return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
         else:
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(username=username, password=password)
 
             if user is None:
-                return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
+                return HttpResponseRedirect(reverse('hospital_login'), {'form': form, 'invalid': True})
             else:
                 request.session['id'] = user.id
                 request.session['hospital_name'] = form.instance.name

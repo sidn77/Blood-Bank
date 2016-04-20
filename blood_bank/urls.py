@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     # donor routes
     url(r'^donor/login', views.donor_login, name='donor_login'),
-    # url(r'^donor/logout', views.donor_logout, name='donor_logout'),
+    url(r'^donor/logout', views.donor_logout, name='donor_logout'),
     url(r'^donor/register', views.donor_register, name='donor_register'),
     url(r'^donor/home', views.donor_home, name='donor_home'),
     # hospital routes

@@ -1,14 +1,15 @@
+
 {% extends 'vampire/base.html' %}
 {% block content %}
-{%include 'vampire/logged_in_hospital_navbar.html' %}
+{% include 'donor/logged_in_donor_navbar.html' %}
 <div id="wrap">
     <div class="page-header login-container">
         <h1>
-            Donor {{ request.session.donor_name }} Home
+             Donor {{ request.session.hospital_name }} Home
+
         </h1>
     </div>
 </div>
-
 {% include 'vampire/footer.html' %}
-
 {% endblock %}
+
