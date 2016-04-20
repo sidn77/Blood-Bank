@@ -14,8 +14,8 @@ class Address(models.Model):
 
 
 class Donor(models.Model):
-    username = models.CharField(max_length=200, default='#')
-    password = models.CharField(max_length=200, default='0000')
+    username = models.CharField(max_length=200, default='')
+    password = models.CharField(max_length=200, default='')
     name = models.CharField(max_length=200)
     age = models.IntegerField()
     did = models.AutoField(primary_key=True)
@@ -47,8 +47,8 @@ class BloodSample(models.Model):
 
 class Hospital(models.Model):
     name = models.CharField(max_length=20)
-    username = models.CharField(max_length=200, default='#')
-    password = models.CharField(max_length=200, default='0000')
+    username = models.CharField(max_length=200, default='')
+    password = models.CharField(max_length=200, default='')
     hid = models.AutoField(primary_key=True)
     longitude = models.DecimalField(max_digits=5,decimal_places=2)
     latitude = models.DecimalField(max_digits=5,decimal_places=2)
