@@ -1,0 +1,57 @@
+{% extends 'vampire/base.html' %}
+
+{% load bootstrap3 %}
+{% block content %}
+{% include 'vampire/not_logged_in_navbar.html' %}
+
+<div id="wrap">
+    <div class = "hospital-container">
+        <div class="page-header">
+            <h1>
+                Hospital
+            </h1>
+        </div>
+
+        <p class="lead">
+            Wish to join the ranks of hospitals that access our world-class
+            Blood Bank facilites?
+        </p>
+
+        <div class="login-register-container">
+            <button type="button"
+                    class="btn btn-info register-btn"
+                    onclick="location.href='{% url 'hospital_register' %}'">
+                Register a Hospital {% bootstrap_icon "heart" %}
+            </button>
+        </div>
+    </div>
+
+
+    <div class = "hospital-container">
+        <div class="page-header">
+            <h1>
+                Donor
+            </h1>
+        </div>
+
+        <p class="lead">
+            Want to become a registered donor to gain access to our network of bloood banks to donate to?
+        </p>
+
+        <div class="login-register-container">
+<<<<<<< HEAD:vampire/templates/vampire/home.html
+            <button type="button" class="btn btn-default register-btn" onclick="location.href='{% url 'donor:donor_new' %}'">Register a Donor</button>
+||||||| merged common ancestors
+            <button type="button" class="btn btn-default register-btn"> Register a Blood Bank</button>
+=======
+            <button type="button"
+                    class="btn btn-success register-btn"
+            onclick="location.href='{%url 'donor_register' %}'"> Register a Donor {% bootstrap_icon "user" %}</button>
+>>>>>>> de51d6b10f9141c0cf4849f593c567309f97ca27:vampire/templates/vampire/index.html
+        </div>
+    </div>
+</div>
+
+{% include 'vampire/footer.html' %}
+
+{% endblock %}

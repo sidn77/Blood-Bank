@@ -1,6 +1,8 @@
 {% extends 'vampire/base.html' %}
 {% block content %}
 {% load bootstrap3 %}
+{% include 'vampire/not_logged_in_navbar.html' %}
+
 
 <div id="wrap">
     <div class="page-header login-container">
@@ -24,16 +26,11 @@
                 {% bootstrap_form form %}
                 {% buttons %}
                 <button type="submit" class="btn btn-primary">
-                    {% bootstrap_icon "star" %} Submit
+                    {% bootstrap_icon "log-in" %} Login
                 </button>
                 {% endbuttons %}
             </form>
     </div>
 </div>
-<div id="footer">
-    <div class="container">
-        <p class="text-muted credit"> Bhat Inc.</p>
-    </div>
-</div>
-
+{% include 'vampire/footer.html' %}
 {% endblock %}

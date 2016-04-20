@@ -1,12 +1,47 @@
 {% extends 'vampire/base.html' %}
-{% load staticfiles %}
 {% block content %}
+{% load bootstrap3 %}
+{% include 'vampire/not_logged_in_navbar.html' %}
 
-<h1>New Donor</h1>
-    <form method="POST" class="post-form">{% csrf_token %}
-        {{ donor_form.as_p }}
-        {{ address_form.as_p }}
-        <button type="submit" class="save btn btn-default">Save</button>
-    </form>
+<style>
+    body {
+        background-color: #6EAB2F !important;
+        color: #FFFFFF !important;
+    }
+
+    h1, h2, h3, h4, h5, label {
+        color: #ffffff;
+    }
+
+    .btn#register{
+        border: 1px solid #efefef;
+        background-color: rgba(0, 0, 0, 0);
+        color: #ffffff;
+    }
+
+    .btn:hover {
+        background-color: rgba(255, 255, 255, 1);
+
+    }
+</style>
+
+<div id="wrap">
+    <div class="login-container">
+        <h1>
+            Donor Registration
+        </h1>
+
+        <form method="POST" class="post-form">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+            <button type="submit" id="register" class="btn btn-secondary">
+                {% bootstrap_icon "send" %} Register
+            </button>
+            {% endbuttons %}
+        </form>
+    </div>
+</div>
+{% include 'vampire/footer.html' %}
 
 {% endblock %}

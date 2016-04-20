@@ -1,17 +1,15 @@
-from django.shortcuts import render, get_object_or_404, render_to_response
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from .models import *
 from .forms import *
-from django.shortcuts import redirect, HttpResponseRedirect
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import  *
+from django.shortcuts import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.views import logout
 
-
-def home(request):
-    return render(request, 'vampire/home.html')
+def index(request):
+    return render(request, 'vampire/index.html')
 
 
 # DONOR VIEWS ---
@@ -20,55 +18,65 @@ def donor_home(request):
     return render(request, 'donor/donor_home.html')
 
 
-def donor_new(request):
+def donor_register(request):
     if request.method == "POST":
-        dform = DonorForm(request.POST)
-        aform = AddressForm(request.POST)
-        if dform.is_valid() and aform.is_valid():
-            address = aform.save(commit=False)
-            data = aform.cleaned_data
-            address.city = data['city']
-            address.state = data['state']
-            address.country = data['country']
-            address.save()
-            donor = dform.save(commit=False)
-            data = dform.cleaned_data
-            donor.username = data['username']
-            donor.password = data['password']
-            donor.name = data['name']
-            donor.age = data['age']
-            donor.blood_type = data['blood_type']
-            donor.aid = Address.objects.latest('aid')
-            donor.save()
-            return redirect('/donor_home/')
-    else:
-        dform = DonorForm()
-        aform = AddressForm()
-    return render(request, 'donor/donor_register.html', {'donor_form': dform, 'address_form': aform})
+        form = DonorRegisterForm(request.POST)
 
-
-def donor_edit(request, donor_id):
-    donor = get_object_or_404(Donor, pk=donor_id)
-    if request.method == "POST":
-        form = DonorForm(request.POST, instance=donor)
         if form.is_valid():
-            form.save()
-            return redirect('donor_detail', donor_id=donor.pk)
+            donor_instance = form.save();
+            return redirect('donor_login')
+        else:
+            return render_to_response('donor/donor_register.html', {'form': form})
     else:
         form = DonorForm(instance=donor)
     return render(request, 'donor/donor_register.html', {'form': DonorForm})
 
 def donor_login(request):
-    return render(request, 'donor/donor_login.html')
+    if request.method == "POST":
+        form = DonorLoginForm(request.POST)
+    else:
+        form = DonorLoginForm()
+
+    success_redirect_url = request.GET.get('next', '/donor/home')
+
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(success_redirect_url)
+
+    if request.method =="GET":
+        return render(request, 'donor/donor_login.html', {'form': form, 'invalid': False})
+    else:
+        if not form.is_valid():
+            return render_to_response(request, 'donor/donor_login.html', {'form': form, 'invalid': True})
+        else:
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+
+            if user is None:
+                return render(request, 'donor/donor_login.html', {'form': form, 'invalid': True})
+            else:
+                request.session['id'] = user.id
+                request.session['donor_name'] = form.instance.name
+                login(request, user)
+                return HttpResponseRedirect(success_redirect_url)
+
 
 # HOSPITAL VIEWS
 def hospital_login(request):
-
     if request.method == "POST":
         form = HospitalLoginForm(request.POST)
+    else:
+        form = HospitalLoginForm()
 
+    success_redirect_url = request.GET.get('next', '/hospital/home')
+
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(success_redirect_url)
+
+    if request.method =="GET":
+        return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': False})
+    else:
         if not form.is_valid():
-            print(">>>>>>>>>>form is invalid")
             return render_to_response(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
         else:
             username = form.cleaned_data['username']
@@ -76,28 +84,28 @@ def hospital_login(request):
             user = authenticate(username=username, password=password)
 
             if user is None:
-                print(">>>>>>>>>user is wrong")
                 return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
             else:
+                request.session['id'] = user.id
+                request.session['hospital_name'] = form.instance.name
                 login(request, user)
-                success_redirect_url = request.GET.get('next', '')
-                print(">>>>>>>>success. Redirecting to: %s" % success_redirect_url)
                 return HttpResponseRedirect(success_redirect_url)
-    else:
-        form = HospitalLoginForm()
-        return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': False})
+
+
+def hospital_logout(request):
+    logout(request)
+    redirect_to = request.GET.get(next, '/hospital/login')
+
+    return HttpResponseRedirect(redirect_to)
 
 def hospital_register(request):
     if request.method == "POST":
         form = HospitalRegisterForm(request.POST)
-        print("received form:\n%s" % form)
-        print("checking if form is valid")
 
         if form.is_valid():
             print("form is valid")
             hospital_instance = form.save();
-            request.session['hospital_id'] = hospital_instance.hid
-            return redirect('/hospital/home', {'hospital': hospital_instance})
+            return redirect('hospital_login')
         else:
            return render_to_response('hospital/hospital_register.html', {'form': form})
     else:

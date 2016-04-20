@@ -19,10 +19,17 @@ from vampire import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', views.home, name='home'),
-    url(r'^donor/', include('vampire.urls', namespace='donor')),
+    url(r'^$', views.index, name='index'),
+    # donor routes
+    url(r'^donor/login', views.donor_login, name='donor_login'),
+    # url(r'^donor/logout', views.donor_logout, name='donor_logout'),
+    url(r'^donor/register', views.donor_register, name='donor_register'),
+    url(r'^donor/home', views.donor_home, name='donor_home'),
+    # hospital routes
     url(r'^hospital/login', views.hospital_login, name="hospital_login"),
+    url(r'^hospital/logout', views.hospital_logout, name="hospital_logout"),
     url(r'^hospital/register', views.hospital_register, name="hospital_register"),
     url(r'^hospital/home', views.hospital_home, name="hospital_home"),
+    # accounts?
     url('^accounts/', include('django.contrib.auth.urls')),
 ]

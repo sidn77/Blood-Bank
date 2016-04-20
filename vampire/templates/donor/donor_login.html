@@ -1,5 +1,8 @@
 {% extends 'vampire/base.html' %}
 {% block content %}
+{% load bootstrap3 %}
+{% include 'vampire/not_logged_in_navbar.html' %}
+
 
 <div id="wrap">
     <div class="page-header login-container">
@@ -7,27 +10,29 @@
             Donor Login
         </h1>
 
-        <form method="POST" class="post-form">{% csrf_token %}
-            <fieldset class="form-group">
-                <label for="exampleInputEmail1">Username</label>
-                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter Username">
-            </fieldset>
+        {%if invalid %}
+        <div class="alert alert-danger">
+            <p> Username or password incorrect.</p>
+        </div>
 
-             <fieldset class="form-group">
-                <label for="exampleInputEmail1">Password</label>
-                <input type="password" class="form-control" id="exampleInputEmail1" placeholder="Enter Password">
-            </fieldset>
-
-          <button type="submit" class="btn btn-primary">Sign in</button>
-
-        </form>
-
+        {%endif%}
+        {% if next %}
+            <form action="/hospital/login/?next={{next}}" method="POST" class="post-form">
+        {%else%}
+            <form action="/hospital/login/?next=/donor/home" method="POST" class="post-form">
+                
+        {% endif %}
+                {% csrf_token %}
+                {% bootstrap_form form %}
+                {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    {% bootstrap_icon "log-in" %} Login
+                </button>
+                {% endbuttons %}
+            </form>
     </div>
 </div>
-<div id="footer">
-    <div class="container">
-        <p class="text-muted credit"> Bhat Inc.</p>
-    </div>
-</div>
+{% include 'vampire/footer.html' %}
 
 {% endblock %}
+
