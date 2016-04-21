@@ -139,3 +139,20 @@ def blood_request(request):
 
     return render(request, 'vampire/blood_request.html', {'form': form})
 
+def donor_search(request):
+    if request.method == "POST":
+        form = DonorSearchForm(request.POST)
+
+        if form.is_valid():
+            data = DonorSearchForm.cleaned_data
+            blood_group = data['blood_group']
+            country = data['country']
+            state = data['state']
+            city = data['city']
+            return render(request, 'result')
+        else:
+            return render_to_response('vampire/donor_search.html', {'form': form})
+    else:
+        form = DonorSearchForm()
+
+    return render(request, 'vampire/donor_search.html', {'form': form})

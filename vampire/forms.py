@@ -47,3 +47,9 @@ class BloodRequestForm(forms.ModelForm):
         model = BloodRequest
         fields = '__all__'
         exlcude = ['brid']
+
+class DonorSearchForm(forms.Form):
+    blood_group = forms.CharField(label='Blood Group', max_length=2)
+    country = forms.CharField(label='Country', max_length=20)
+    state = forms.CharField(label='State', max_length=20)
+    city = forms.CharField(label='City', max_length=20)
