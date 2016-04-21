@@ -1,11 +1,11 @@
-<!--{% extends 'vampire/base.html' %}
+{% extends 'vampire/base.html' %}
 {% block content %}
 {% load bootstrap3 %}
-{% include 'donor/logged_in_donor_navbar.html' %}
+{% include 'vampire/not_logged_in_navbar.html' %}
 
 <style>
     body {
-        background-color: #6EAB2F !important;
+        background-color: #A30808 !important;
         color: #FFFFFF !important;
     }
 
@@ -28,7 +28,7 @@
 <div id="wrap">
     <div class="login-container">
         <h1>
-            Blood Donation
+            Blood Request
         </h1>
 
         <form method="POST" class="post-form">
@@ -36,7 +36,7 @@
             {% bootstrap_form form %}
             {% buttons %}
             <button type="submit" class="btn btn-primary">
-                {% bootstrap_icon "send" %} Register
+                {% bootstrap_icon "send" %} Blood Request
             </button>
             {% endbuttons %}
         </form>
@@ -44,4 +44,4 @@
 </div>
 {% include 'vampire/footer.html' %}
 
-{% endblock %}-->
+{% endblock %}

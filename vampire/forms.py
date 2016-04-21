@@ -41,3 +41,9 @@ class HospitalLoginForm(forms.ModelForm):
     class Meta:
         model = Hospital
         fields = ['username', 'password']
+
+class BloodRequestForm(forms.ModelForm):
+    class Meta:
+        model = BloodRequest
+        fields = '__all__'
+        exlcude = ['brid']

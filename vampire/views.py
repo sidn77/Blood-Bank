@@ -68,20 +68,6 @@ def donor_logout(request):
 
     return HttpResponseRedirect(redirect_to)
 
-def blood_donation(request):
-    if request.method == "POST":
-        form = BloodDonationForm(request.POST)
-
-        if form.is_valid():
-            donor_instance = form.save();
-            return redirect('donor_home')
-        else:
-            return render_to_response('donor/blood_donation.html', {'form': form})
-    else:
-        form = BloodDonationForm()
-
-    return render(request, 'donor/blood_donation.html', {'form': form})
-
 # HOSPITAL VIEWS ---
 @login_required(login_url='/hospital/login')
 def hospital_home(request):
@@ -94,7 +80,7 @@ def hospital_register(request):
         if form.is_valid():
             print("form is valid")
             hospital_instance = form.save();
-            return redirect('hospital_login')
+            return redirect('index')
         else:
            return render_to_response('hospital/hospital_register.html', {'form': form})
     else:
@@ -138,8 +124,18 @@ def hospital_logout(request):
 
     return HttpResponseRedirect(redirect_to)
 
+#Blood Request
+def blood_request(request):
+    if request.method == "POST":
+        form = BloodRequestForm(request.POST)
 
+        if form.is_valid():
+            blood_request_instance = form.save();
+            return redirect('index')
+        else:
+            return render_to_response('vampire/blood_request.html', {'form': form})
+    else:
+        form = BloodRequestForm()
 
-
-
+    return render(request, 'vampire/blood_request.html', {'form': form})
 

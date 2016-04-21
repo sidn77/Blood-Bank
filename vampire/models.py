@@ -14,6 +14,23 @@ class Address(models.Model):
 
 
 class Donor(models.Model):
+    ap = 'A+'
+    am = 'A-'
+    bp = 'B+'
+    bm = 'B-'
+    abp = 'AB+'
+    abm = 'AB-'
+    op = 'O+'
+    om = 'O-'
+    aop = 'A1+'
+    aom = 'A1-'
+    atp = 'A2+'
+    atm = 'A2-'
+    aobp = 'A1B+',
+    aobm = 'A1B-'
+    atbp = 'A2B+'
+    atbm = 'A2B-'
+    bb = 'Bomabay Blood'
     username = models.CharField(max_length=200, default='')
     password = models.CharField(max_length=200, default='')
     name = models.CharField(max_length=200)
@@ -21,24 +38,23 @@ class Donor(models.Model):
     did = models.AutoField(primary_key=True)
     donor_blood_group_choices = (
         (0, 'Select'),
-        (1,'A+'),
-        (2, 'A-'),
-        (3, 'B+'),
-        (4, 'B-'),
-        (5, 'AB+'),
-        (6, 'AB-'),
-        (7, 'O+'),
-        (8, 'O+'),
-        (9, 'O-'),
-        (10, 'A1+'),
-        (11, 'A1-'),
-        (12, 'A2+'),
-        (13, 'A2-'),
-        (14, 'A1B+'),
-        (15, 'A1B-'),
-        (16, 'A2B+'),
-        (17, 'A2B-'),
-        (18, 'Bombay Blood')
+        (ap,'A+'),
+        (am, 'A-'),
+        (bp, 'B+'),
+        (bm, 'B-'),
+        (abp, 'AB+'),
+        (abm, 'AB-'),
+        (op, 'O+'),
+        (om, 'O-'),
+        (aop, 'A1+'),
+        (aom, 'A1-'),
+        (atp, 'A2+'),
+        (atm, 'A2-'),
+        (aobp, 'A1B+'),
+        (aobm, 'A1B-'),
+        (atbp, 'A2B+'),
+        (atbm, 'A2B-'),
+        (bb, 'Bombay Blood')
     )
     blood_group = models.CharField(max_length=2, choices=donor_blood_group_choices, default=0)
     aid = models.ForeignKey(Address, on_delete=models.CASCADE)
@@ -67,28 +83,45 @@ class Hospital(models.Model):
         return self.name
 
 class BloodRequest(models.Model):
+    ap = 'A+'
+    am = 'A-'
+    bp ='B+'
+    bm = 'B-'
+    abp = 'AB+'
+    abm = 'AB-'
+    op = 'O+'
+    om = 'O-'
+    aop = 'A1+'
+    aom = 'A1-'
+    atp = 'A2+'
+    atm = 'A2-'
+    aobp = 'A1B+',
+    aobm = 'A1B-'
+    atbp = 'A2B+'
+    atbm = 'A2B-'
+    bb = 'Bomabay Blood'
+
     brid = models.AutoField(primary_key=True)
     patient_name = models.CharField(max_length=20)
     patient_blood_group_choices =(
         (0, 'Select'),
-        (1,'A+'),
-        (2, 'A-'),
-        (3, 'B+'),
-        (4, 'B-'),
-        (5, 'AB+'),
-        (6, 'AB-'),
-        (7, 'O+'),
-        (8, 'O+'),
-        (9, 'O-'),
-        (10, 'A1+'),
-        (11, 'A1-'),
-        (12, 'A2+'),
-        (13, 'A2-'),
-        (14, 'A1B+'),
-        (15, 'A1B-'),
-        (16, 'A2B+'),
-        (17, 'A2B-'),
-        (18, 'Bombay Blood')
+        (ap,'A+'),
+        (am, 'A-'),
+        (bp, 'B+'),
+        (bm, 'B-'),
+        (abp, 'AB+'),
+        (abm, 'AB-'),
+        (op, 'O+'),
+        (om, 'O-'),
+        (aop, 'A1+'),
+        (aom, 'A1-'),
+        (atp, 'A2+'),
+        (atm, 'A2-'),
+        (aobp, 'A1B+'),
+        (aobm, 'A1B-'),
+        (atbp, 'A2B+'),
+        (atbm, 'A2B-'),
+        (bb, 'Bombay Blood')
     )
     blood_group = models.CharField(max_length=2, choices=patient_blood_group_choices, default=0)
     patient_age = models.PositiveIntegerField()
