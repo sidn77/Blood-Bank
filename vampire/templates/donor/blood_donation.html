@@ -1,0 +1,47 @@
+<!--{% extends 'vampire/base.html' %}
+{% block content %}
+{% load bootstrap3 %}
+{% include 'donor/logged_in_donor_navbar.html' %}
+
+<style>
+    body {
+        background-color: #6EAB2F !important;
+        color: #FFFFFF !important;
+    }
+
+    h1, h2, h3, h4, h5, label {
+        color: #ffffff;
+    }
+
+    .btn#register{
+        border: 1px solid #efefef;
+        background-color: rgba(0, 0, 0, 0);
+        color: #ffffff;
+    }
+
+    .btn:hover {
+        background-color: rgba(255, 255, 255, 1);
+
+    }
+</style>
+
+<div id="wrap">
+    <div class="login-container">
+        <h1>
+            Blood Donation
+        </h1>
+
+        <form method="POST" class="post-form">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% buttons %}
+            <button type="submit" class="btn btn-primary">
+                {% bootstrap_icon "send" %} Register
+            </button>
+            {% endbuttons %}
+        </form>
+    </div>
+</div>
+{% include 'vampire/footer.html' %}
+
+{% endblock %}-->

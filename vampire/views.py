@@ -68,6 +68,20 @@ def donor_logout(request):
 
     return HttpResponseRedirect(redirect_to)
 
+def blood_donation(request):
+    if request.method == "POST":
+        form = BloodDonationForm(request.POST)
+
+        if form.is_valid():
+            donor_instance = form.save();
+            return redirect('donor_home')
+        else:
+            return render_to_response('donor/blood_donation.html', {'form': form})
+    else:
+        form = BloodDonationForm()
+
+    return render(request, 'donor/blood_donation.html', {'form': form})
+
 # HOSPITAL VIEWS ---
 @login_required(login_url='/hospital/login')
 def hospital_home(request):

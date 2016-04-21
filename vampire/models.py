@@ -17,49 +17,86 @@ class Donor(models.Model):
     username = models.CharField(max_length=200, default='')
     password = models.CharField(max_length=200, default='')
     name = models.CharField(max_length=200)
-    age = models.IntegerField()
+    age = models.PositiveIntegerField()
     did = models.AutoField(primary_key=True)
-    blood_type = models.CharField(max_length=2)
+    donor_blood_group_choices = (
+        (0, 'Select'),
+        (1,'A+'),
+        (2, 'A-'),
+        (3, 'B+'),
+        (4, 'B-'),
+        (5, 'AB+'),
+        (6, 'AB-'),
+        (7, 'O+'),
+        (8, 'O+'),
+        (9, 'O-'),
+        (10, 'A1+'),
+        (11, 'A1-'),
+        (12, 'A2+'),
+        (13, 'A2-'),
+        (14, 'A1B+'),
+        (15, 'A1B-'),
+        (16, 'A2B+'),
+        (17, 'A2B-'),
+        (18, 'Bombay Blood')
+    )
+    blood_group = models.CharField(max_length=2, choices=donor_blood_group_choices, default=0)
     aid = models.ForeignKey(Address, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
 class BloodBank(models.Model):
+    username = models.CharField(max_length=200, default='')
+    password = models.CharField(max_length=200, default='')
     name = models.CharField(max_length=200)
     bbid = models.AutoField(primary_key=True)
-    longitude = models.DecimalField(max_digits=5,decimal_places=2)
-    latitude = models.DecimalField(max_digits=5,decimal_places=2)
     aid = models.ForeignKey(Address, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
-
-class BloodSample(models.Model):
-    bsid = models.AutoField(primary_key=True)
-    donation_date = models.DateTimeField(default=timezone.now)
-    volume = models.DecimalField(max_digits=5, decimal_places=2)
-    did = models.ForeignKey(Donor, on_delete=models.CASCADE)
-    bbid = models.ForeignKey(BloodBank, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.bsid)
 
 class Hospital(models.Model):
     name = models.CharField(max_length=20)
     username = models.CharField(max_length=200, default='')
     password = models.CharField(max_length=200, default='')
     hid = models.AutoField(primary_key=True)
-    longitude = models.DecimalField(max_digits=5,decimal_places=2)
-    latitude = models.DecimalField(max_digits=5,decimal_places=2)
     aid = models.ForeignKey(Address, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
-class Reserves(models.Model):
-    date_reserved = models.DateTimeField(default=timezone.now)
-    cost = models.IntegerField()
-    hid = models.ForeignKey(Hospital, on_delete=models.CASCADE)
-    bsid = models.ForeignKey(BloodSample, on_delete=models.CASCADE)
+class BloodRequest(models.Model):
+    brid = models.AutoField(primary_key=True)
+    patient_name = models.CharField(max_length=20)
+    patient_blood_group_choices =(
+        (0, 'Select'),
+        (1,'A+'),
+        (2, 'A-'),
+        (3, 'B+'),
+        (4, 'B-'),
+        (5, 'AB+'),
+        (6, 'AB-'),
+        (7, 'O+'),
+        (8, 'O+'),
+        (9, 'O-'),
+        (10, 'A1+'),
+        (11, 'A1-'),
+        (12, 'A2+'),
+        (13, 'A2-'),
+        (14, 'A1B+'),
+        (15, 'A1B-'),
+        (16, 'A2B+'),
+        (17, 'A2B-'),
+        (18, 'Bombay Blood')
+    )
+    blood_group = models.CharField(max_length=2, choices=patient_blood_group_choices, default=0)
+    patient_age = models.PositiveIntegerField()
+    requirement_date = models.DateTimeField(default=timezone.now)
+    units = models.DecimalField(max_digits=5,decimal_places=2)
+    hospital_name = models.CharField(max_length=20)
+    aid = models.ForeignKey(Address, on_delete=models.CASCADE)
+    purpose = models.TextField(max_length=200)
 
+    def __str__(self):
+        return self.brid
