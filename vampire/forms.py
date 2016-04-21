@@ -49,7 +49,44 @@ class BloodRequestForm(forms.ModelForm):
         exlcude = ['brid']
 
 class DonorSearchForm(forms.Form):
-    blood_group = forms.CharField(label='Blood Group', max_length=2)
+    ap = 'A+'
+    am = 'A-'
+    bp ='B+'
+    bm = 'B-'
+    abp = 'AB+'
+    abm = 'AB-'
+    op = 'O+'
+    om = 'O-'
+    aop = 'A1+'
+    aom = 'A1-'
+    atp = 'A2+'
+    atm = 'A2-'
+    aobp = 'A1B+',
+    aobm = 'A1B-'
+    atbp = 'A2B+'
+    atbm = 'A2B-'
+    bb = 'Bomabay Blood'
+    donor_blood_group_choices = (
+        (0, 'Select'),
+        (ap, 'A+'),
+        (am, 'A-'),
+        (bp, 'B+'),
+        (bm, 'B-'),
+        (abp, 'AB+'),
+        (abm, 'AB-'),
+        (op, 'O+'),
+        (om, 'O-'),
+        (aop, 'A1+'),
+        (aom, 'A1-'),
+        (atp, 'A2+'),
+        (atm, 'A2-'),
+        (aobp, 'A1B+'),
+        (aobm, 'A1B-'),
+        (atbp, 'A2B+'),
+        (atbm, 'A2B-'),
+        (bb, 'Bombay Blood')
+    )
+    blood_group = forms.ChoiceField(label='Blood Group', initial='select', choices=donor_blood_group_choices)
     country = forms.CharField(label='Country', max_length=20)
     state = forms.CharField(label='State', max_length=20)
     city = forms.CharField(label='City', max_length=20)

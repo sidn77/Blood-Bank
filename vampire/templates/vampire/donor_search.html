@@ -30,7 +30,18 @@
         <h1>
             Search for Donor
         </h1>
+        <!--{%if invalid %}
+        <div class="alert alert-danger">
+            <p> Incorrect data in fields</p>
+        </div>
 
+        {%endif%}
+        {% if next %}
+            <form action="/donorsearch/?next={{next}}" method="POST" class="post-form">
+        {%else%}
+            <form action="/donorsearch/?next=/results" method="POST" class="post-form">
+
+        {% endif %}-->
         <form method="POST" class="post-form">
             {% csrf_token %}
             {% bootstrap_form form %}

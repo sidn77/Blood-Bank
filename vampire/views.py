@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import logout
+from django.db.models.expressions import RawSQL
 
 def index(request):
     return render(request, 'vampire/index.html')
@@ -140,19 +141,24 @@ def blood_request(request):
     return render(request, 'vampire/blood_request.html', {'form': form})
 
 def donor_search(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         form = DonorSearchForm(request.POST)
-
         if form.is_valid():
-            data = DonorSearchForm.cleaned_data
-            blood_group = data['blood_group']
-            country = data['country']
-            state = data['state']
-            city = data['city']
-            return render(request, 'result')
-        else:
-            return render_to_response('vampire/donor_search.html', {'form': form})
+            blood_group = form.cleaned_data['blood_group']
+            country = form.cleaned_data['country']
+            state = form.cleaned_data['state']
+            city = form.cleaned_data['city']
+            result = Donor.objects.raw('select did, name, aid_id from vampire_donor where blood_group = %s', [blood_group])
+            names_addresses = []
+            for p in result:
+                name = p.name
+                result = Address.objects.raw('select aid, country, state, city from vampire_address where aid = %s and country = %s and state= %s and city = %s', [p.aid_id, country, state, city])
+                for addr in result:
+                    tuple = name, addr
+                    names_addresses.append(tuple)
+            print (names_addresses)
+            return render_to_response('vampire/donor_search_result.html', {'names_addresses': names_addresses})
     else:
         form = DonorSearchForm()
 
-    return render(request, 'vampire/donor_search.html', {'form': form})
+    return render(request, 'vampire/donor_search.html', {'form': form,})
