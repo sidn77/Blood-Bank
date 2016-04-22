@@ -87,7 +87,7 @@ class BloodBank(models.Model):
 class Hospital(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=20)
-    username = models.CharField(max_length=200, default='')
+    username = models.CharField(max_length=200, default='', unique=True)
     password = models.CharField(max_length=200, default='')
     hid = models.AutoField(primary_key=True)
     aid = models.ForeignKey(Address, on_delete=models.CASCADE)

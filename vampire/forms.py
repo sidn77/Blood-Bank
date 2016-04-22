@@ -1,6 +1,7 @@
 from django import forms
 from .forms import *
 from .models import *
+from django.contrib.auth.models import User
 
 class DonorRegisterForm(forms.ModelForm):
     class Meta:
@@ -11,17 +12,9 @@ class DonorRegisterForm(forms.ModelForm):
             'password': forms.PasswordInput(),
         }
 
-
-class DonorLoginForm(forms.ModelForm):
-
-    password = forms.CharField(widget=forms.PasswordInput)
-
-    class Meta:
-        model = Donor
-        fields = ['username', 'password']
-        widgets = {
-            'password': forms.PasswordInput(),
-        }
+class DonorLoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput())
 
 
 class AddressForm(forms.ModelForm):
@@ -32,9 +25,6 @@ class AddressForm(forms.ModelForm):
 
 
 class HospitalRegisterForm(forms.ModelForm):
-
-    password = forms.CharField(widget=forms.PasswordInput)
-
     class Meta:
         model = Hospital
         fields = '__all__'
@@ -43,16 +33,11 @@ class HospitalRegisterForm(forms.ModelForm):
             'password': forms.PasswordInput(),
         }
 
-class HospitalLoginForm(forms.ModelForm):
 
-    password = forms.CharField(widget=forms.PasswordInput)
+class HospitalLoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput())
 
-    class Meta:
-        model = Hospital
-        fields = ['username', 'password']
-        widgets = {
-            'password': forms.PasswordInput(),
-        }
 
 class BloodRequestForm(forms.ModelForm):
     class Meta:
