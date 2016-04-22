@@ -20,11 +20,13 @@ def index(request):
 def donor_home(request):
     return render(request, 'donor/donor_home.html')
 
+
 def donor_register(request):
     if request.method == "POST":
         form = DonorRegisterForm(request.POST)
 
         if form.is_valid():
+            # form["user"] = User.
             donor_instance = form.save();
             return redirect('donor_login')
         else:
@@ -33,6 +35,7 @@ def donor_register(request):
         form = DonorRegisterForm()
 
     return render(request, 'donor/donor_register.html', {'form': form})
+
 
 def donor_login(request):
     if request.method == "POST":
@@ -45,18 +48,22 @@ def donor_login(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect(success_redirect_url)
 
-    if request.method =="GET":
-        return render(request, 'donor/donor_login.html', {'form': form, 'invalid': False})
+    if request.method == "GET":
+        return render(request,
+                      'donor/donor_login.html',
+                      {'form': form, 'invalid': False})
     else:
         if not form.is_valid():
-            return render_to_response(request, 'donor/donor_login.html', {'form': form, 'invalid': True})
+            return render_to_response(request, 'donor/donor_login.html',
+                                      {'form': form, 'invalid': True})
         else:
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(username=username, password=password)
 
             if user is None:
-                return HttpResponseRedirect(reverse('hospital_login'), {'form': form, 'invalid': True})
+                return HttpResponseRedirect(reverse('hospital_login'),
+                                            {'form': form, 'invalid': True})
             else:
                 request.session['id'] = user.id
                 request.session['donor_name'] = form.instance.name

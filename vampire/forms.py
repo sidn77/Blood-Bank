@@ -2,14 +2,13 @@ from django import forms
 from .forms import *
 from .models import *
 
+
 class DonorRegisterForm(forms.ModelForm):
-
-    password = forms.CharField(widget=forms.PasswordInput)
-
     class Meta:
         model = Donor
         fields = '__all__'
-        exclude = ['did']
+        exclude = ['did', 'user']
+
 
 class DonorLoginForm(forms.ModelForm):
 
@@ -19,34 +18,33 @@ class DonorLoginForm(forms.ModelForm):
         model = Donor
         fields = ['username', 'password']
 
+
 class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
         fields = '__all__'
         exclude = ['aid']
 
+
 class HospitalRegisterForm(forms.ModelForm):
-
-    password = forms.CharField(widget=forms.PasswordInput)
-
     class Meta:
         model = Hospital
         fields = '__all__'
-        exclude = ['hid']
+        exclude = ['hid', 'user']
+
 
 class HospitalLoginForm(forms.ModelForm):
-
-    password = forms.CharField(widget=forms.PasswordInput)
-
     class Meta:
         model = Hospital
         fields = ['username', 'password']
+
 
 class BloodRequestForm(forms.ModelForm):
     class Meta:
         model = BloodRequest
         fields = '__all__'
         exlcude = ['brid']
+
 
 class DonorSearchForm(forms.Form):
     ap = 'A+'
