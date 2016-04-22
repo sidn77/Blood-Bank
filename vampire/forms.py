@@ -1,6 +1,7 @@
 from django import forms
 from .forms import *
 from .models import *
+from django.contrib.auth.models import User
 
 
 class DonorRegisterForm(forms.ModelForm):
@@ -10,13 +11,9 @@ class DonorRegisterForm(forms.ModelForm):
         exclude = ['did', 'user']
 
 
-class DonorLoginForm(forms.ModelForm):
-
-    password = forms.CharField(widget=forms.PasswordInput)
-
-    class Meta:
-        model = Donor
-        fields = ['username', 'password']
+class DonorLoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput())
 
 
 class AddressForm(forms.ModelForm):
@@ -33,10 +30,9 @@ class HospitalRegisterForm(forms.ModelForm):
         exclude = ['hid', 'user']
 
 
-class HospitalLoginForm(forms.ModelForm):
-    class Meta:
-        model = Hospital
-        fields = ['username', 'password']
+class HospitalLoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput())
 
 
 class BloodRequestForm(forms.ModelForm):

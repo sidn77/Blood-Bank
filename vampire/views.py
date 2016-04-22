@@ -9,10 +9,18 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import logout
-from django.db.models.expressions import RawSQL
+
 
 def index(request):
     return render(request, 'vampire/index.html')
+
+
+def django_donor_uname(donor_username):
+    return 'donor_' + donor_username
+
+
+def django_hospital_uname(hospital_username):
+    return 'hospital_' + hospital_username
 
 
 # DONOR VIEWS ---
@@ -26,49 +34,73 @@ def donor_register(request):
         form = DonorRegisterForm(request.POST)
 
         if form.is_valid():
-            # form["user"] = User.
-            donor_instance = form.save();
+            donor = form.save(commit=False)
+            user = User(username=django_donor_uname(form.cleaned_data["username"]))
+            user.set_password(form.cleaned_data["password"])
+            user.save()
+
+            donor.user = user
+            donor.save()
             return redirect('donor_login')
         else:
-            return render_to_response('donor/donor_register.html', {'form': form})
+            return render(request,
+                          'donor/donor_register.html',
+                          {'form': form})
     else:
         form = DonorRegisterForm()
 
-    return render(request, 'donor/donor_register.html', {'form': form})
+    return render(request, 'donor/donor_register.html',
+                           {'form': form})
 
 
 def donor_login(request):
+    HTML_TO_RENDER = 'donor/donor_login.html'
+    SUCCESS_REDIRECT_URL = request.GET.get('next', '/donor/home')
+
     if request.method == "POST":
         form = DonorLoginForm(request.POST)
     else:
         form = DonorLoginForm()
 
-    success_redirect_url = request.GET.get('next', '/donor/home')
+    def login_render(invalid):
+            return render(request, HTML_TO_RENDER,
+                          {'form': form, 'invalid': invalid})
 
     if request.user.is_authenticated():
-        return HttpResponseRedirect(success_redirect_url)
+        try:
+            request.user.donor
+        except Donor.DoesNotExist:
+            hospital_logout(request)
+
+        return HttpResponseRedirect(SUCCESS_REDIRECT_URL)
 
     if request.method == "GET":
-        return render(request,
-                      'donor/donor_login.html',
-                      {'form': form, 'invalid': False})
+        return login_render(invalid=False)
+
     else:
         if not form.is_valid():
-            return render_to_response(request, 'donor/donor_login.html',
-                                      {'form': form, 'invalid': True})
-        else:
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(username=username, password=password)
+            print("FORM INVALID")
+            return login_render(invalid=True)
 
-            if user is None:
-                return HttpResponseRedirect(reverse('hospital_login'),
-                                            {'form': form, 'invalid': True})
-            else:
-                request.session['id'] = user.id
-                request.session['donor_name'] = form.instance.name
-                login(request, user)
-                return HttpResponseRedirect(success_redirect_url)
+        username = django_donor_uname(form.cleaned_data['username'])
+        password = form.cleaned_data['password']
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            print("FOUND NO USER | uname: %s | passwd: %s" % (username, password))
+            return login_render(invalid=True)
+
+        try:
+            donor = user.donor
+        except Donor.DoesNotExist:
+            print("trying to login DONOR as HOSPITAL.")
+            return login_render(invalid=True)
+
+        request.session['id'] = user.id
+        request.session['donor_name'] = donor.name
+        login(request, user)
+        return HttpResponseRedirect(SUCCESS_REDIRECT_URL)
+
 
 def donor_logout(request):
     logout(request)
@@ -81,49 +113,76 @@ def donor_logout(request):
 def hospital_home(request):
     return render(request, 'hospital/hospital_home.html')
 
+
 def hospital_register(request):
     if request.method == "POST":
         form = HospitalRegisterForm(request.POST)
 
         if form.is_valid():
-            print("form is valid")
-            hospital_instance = form.save();
-            return redirect('index')
+            hospital = form.save(commit=False)
+            user = User(username=django_hospital_uname(form.cleaned_data["username"]))
+            user.set_password(form.cleaned_data["password"])
+            user.save()
+
+            hospital.user = user
+            hospital.save()
+            return redirect('hospital_login')
         else:
-           return render_to_response('hospital/hospital_register.html', {'form': form})
+            return render(request,
+                          'hospital/hospital_register.html',
+                          {'form': form})
     else:
         form = HospitalRegisterForm()
 
-    return render(request, 'hospital/hospital_register.html', {'form': form})
+    return render(request, 'hospital/hospital_register.html',
+                           {'form': form})
+
 
 def hospital_login(request):
+    HTML_TO_RENDER = 'hospital/hospital_login.html'
+    SUCCESS_REDIRECT_URL = request.GET.get('next', '/hospital/home')
+
+    def login_render(invalid):
+            return render(request, HTML_TO_RENDER,
+                          {'form': form, 'invalid': invalid})
+
     if request.method == "POST":
         form = HospitalLoginForm(request.POST)
     else:
         form = HospitalLoginForm()
 
-    success_redirect_url = request.GET.get('next', '/hospital/home')
-
     if request.user.is_authenticated():
-        return HttpResponseRedirect(success_redirect_url)
+        try:
+            request.user.hospital
+        except Hospital.DoesNotExist:
+            donor_logout(request)
 
-    if request.method =="GET":
-        return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': False})
+        return HttpResponseRedirect(SUCCESS_REDIRECT_URL)
+
+    if request.method == "GET":
+        return login_render(invalid=False)
+
     else:
         if not form.is_valid():
-            return render(request, 'hospital/hospital_login.html', {'form': form, 'invalid': True})
-        else:
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(username=username, password=password)
+            return login_render(invalid=True)
 
-            if user is None:
-                return HttpResponseRedirect(reverse('hospital_login'), {'form': form, 'invalid': True})
-            else:
-                request.session['id'] = user.id
-                request.session['hospital_name'] = form.instance.name
-                login(request, user)
-                return HttpResponseRedirect(success_redirect_url)
+        username = django_hospital_uname(form.cleaned_data['username'])
+        password = form.cleaned_data['password']
+        user = authenticate(username=username, password=password)
+
+        if user is None:
+            return login_render(invalid=True)
+
+        try:
+            hospital = user.hospital
+        except Hospital.DoesNotExist:
+            print("trying to login hospital as donor.")
+            return login_render(invalid=True)
+
+        request.session['id'] = user.id
+        request.session['hospital_name'] = hospital.name
+        login(request, user)
+        return HttpResponseRedirect(SUCCESS_REDIRECT_URL)
 
 
 def hospital_logout(request):
@@ -132,13 +191,15 @@ def hospital_logout(request):
 
     return HttpResponseRedirect(redirect_to)
 
-#Blood Request
+# Blood Request
+
+
 def blood_request(request):
     if request.method == "POST":
         form = BloodRequestForm(request.POST)
 
         if form.is_valid():
-            blood_request_instance = form.save();
+            blood_request_instance = form.save()
             return redirect('index')
         else:
             return render_to_response('vampire/blood_request.html', {'form': form})

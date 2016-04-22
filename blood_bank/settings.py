@@ -73,11 +73,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'blood_bank.wsgi.application'
 
-
-AUTHENTICATION_BACKENDS = [
-
-    'vampire.auth.HospitalDonorAuthBackend',
-]
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
@@ -91,6 +86,11 @@ DATABASES = {
         'PORT': '',
     }
 }
+
+
+AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+)
 
 
 # Password validation
