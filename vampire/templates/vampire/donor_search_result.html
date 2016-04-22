@@ -3,14 +3,37 @@
 {% block content %}
 {% include 'vampire/not_logged_in_navbar.html' %}
 <div id="wrap">
-    <div class="page-header login-container">
-        <h1>
+    <div class="login-container">
+        <h1 class="page-header">
              Search Results
         </h1>
         {% if names_addresses %}
-            {% for entry in names_addresses %}
-                <li>{{ entry }}</li>
-            {% endfor %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Country</th>
+                                <th>Status</th>
+                                <th>Mobile Number</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in names_addresses %}
+                            <tr>
+                                <td>{{entry.0}}</td>
+                                <td>{{entry.1}}</td>
+                                <td>{{entry.2}}</td>
+                                <td>{{entry.3}}</td>
+                                <td>{{entry.4}}</td>
+                                <td>{{entry.5}}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
         {% else %}
             <h4>No results found</h4>
         {% endif %}

@@ -12,6 +12,7 @@ from django.contrib.auth.views import logout
 from django.db.models.expressions import RawSQL
 from django.core.mail import send_mail
 
+
 def index(request):
     return render(request, 'vampire/index.html')
 
@@ -109,6 +110,7 @@ def donor_logout(request):
 
     return HttpResponseRedirect(redirect_to)
 
+
 # HOSPITAL VIEWS ---
 @login_required(login_url='/hospital/login')
 def hospital_home(request):
@@ -181,6 +183,7 @@ def hospital_login(request):
             return login_render(invalid=True)
 
         request.session['id'] = user.id
+        request.session['hospital_id'] = hospital.hid
         request.session['hospital_name'] = hospital.name
         login(request, user)
         return HttpResponseRedirect(SUCCESS_REDIRECT_URL)
@@ -202,21 +205,25 @@ def blood_request(request):
         form = BloodRequestForm()
 
     if form.is_valid():
-        blood_request_instance = form.save();
+        blood_request_instance = form.save(commit=False)
+        blood_request_instance.hid = Hospital(hid=request.session['hospital_id'])
+        blood_request_instance.save()
+
         blood_group = form.cleaned_data['blood_group']
         aid = form.cleaned_data['aid']
-        result = Donor.objects.raw('select did, name, aid_id from vampire_donor where blood_group = %s',
+        result = Donor.objects.raw('select * from vampire_donor where blood_group = %s',
                                    [blood_group])
         for d in result:
             result = Address.objects.raw(
                 'select aid, country, state, city from vampire_address where aid = %s',
-            [d.aid_id])
+                [d.aid_id])
             email = d.email
             print (email)
         #send_mail('test email', 'hello bro', 'bandninc666@gmail.com', ['email'])
         return redirect('blood_request_accepted')
     else:
         return render(request, 'vampire/blood_request.html', {'form': form})
+
 
 def donor_search(request):
     if request.method == 'POST':
@@ -232,18 +239,53 @@ def donor_search(request):
                 name = p.name
                 status = p.status
                 mob = p.mobile_number
-                result = Address.objects.raw('select aid, country, state, city from vampire_address where aid = %s and country = %s and state= %s and city = %s',
-                                             [p.aid_id, country, state, city])
+                have_one_check = False
+                raw_address_query = 'select * from vampire_address'
 
+                all_search_fields = [(city, 'city'), (state, 'state'), (country, 'country')]
+                search_params_dict = {}
+
+                for (field, field_name) in all_search_fields:
+                    if field != '':
+                        if not have_one_check:
+                            raw_address_query += ' where '
+                            have_one_check = True
+                        else:
+                            raw_address_query += ' and '
+
+                        raw_address_query += ' soundex(' + field_name + ') = soundex(%(' + field_name + ')s) '
+                        search_params_dict[field_name] = field
+
+                print(">> raw_address_query : |%s|" % raw_address_query)
+                result = Address.objects.raw(raw_address_query, search_params_dict)
+
+                # if city != '':
+                #     result = Address.objects.raw(
+                #         'select * from vampire_address where aid = %s and soundex(city) = soundex(%s)',
+                #         [p.aid_id, city]
+                #     )
+                # elif state != '':
+                #     result = Address.objects.raw(
+                #         'select * from vampire_address where aid = %s and soundex(state) = soundex(%s)',
+                #         [p.aid_id, state]
+                #     )
+                # elif country != '':
+                #     result = Address.objects.raw(
+                #         'select * from vampire_address where aid = %s and soundex(country) = soundex(%s)', [p.aid_id, country])
+                # else:
+                #     result = Address.objects.raw('select * from vampire_address where aid = %s', [p.aid_id])
+                # print (result)
                 for addr in result:
-                    tuple = name, addr, status, mob
+                    print (addr)
+                    tuple = name, addr.city, addr.state, addr.country, status, mob
                     names_addresses.append(tuple)
-            print (names_addresses)
+
             return render_to_response('vampire/donor_search_result.html', {'names_addresses': names_addresses})
     else:
         form = DonorSearchForm()
 
     return render(request, 'vampire/donor_search.html', {'form': form,})
+
 
 def blood_request_accepted(request):
     return render(request, 'vampire/blood_request_accepted.html')

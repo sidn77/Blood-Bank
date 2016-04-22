@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django .utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import *
 
 # Create your models here.
 class Address(models.Model):
@@ -22,7 +23,7 @@ class Donor(models.Model):
     age = models.PositiveIntegerField()
     email = models.EmailField()
     did = models.AutoField(primary_key=True)
-    mobile_number = models.CharField(max_length=10, default='')
+    mobile_number = models.CharField(default='', validators=[MinLengthValidator(10)], max_length=10)
     ap = 'A+'
     am = 'A-'
     bp = 'B+'
@@ -139,7 +140,7 @@ class BloodRequest(models.Model):
     patient_age = models.PositiveIntegerField()
     requirement_date = models.DateTimeField(default=timezone.now)
     units = models.DecimalField(max_digits=5,decimal_places=2)
-    hospital_name = models.CharField(max_length=20)
+    hid = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     aid = models.ForeignKey(Address, on_delete=models.CASCADE)
     purpose = models.TextField(max_length=200)
 
