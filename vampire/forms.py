@@ -45,7 +45,7 @@ class BloodRequestForm(forms.ModelForm):
     class Meta:
         model = BloodRequest
         fields = '__all__'
-        exclude = ['brid', 'hid']
+        exclude = ['brid', 'hid', 'accpted_by', 'did', 'accepted_by']
 
 
 class DonorSearchForm(forms.Form):

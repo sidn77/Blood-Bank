@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.core.validators import *
 
 # Create your models here.
+
+
 class Address(models.Model):
     aid = models.AutoField(primary_key=True)
     city = models.CharField(max_length=20)
@@ -74,6 +76,7 @@ class Donor(models.Model):
     def __str__(self):
         return self.name
 
+
 class BloodBank(models.Model):
     username = models.CharField(max_length=200, default='')
     password = models.CharField(max_length=200, default='')
@@ -83,6 +86,7 @@ class BloodBank(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Hospital(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -94,6 +98,7 @@ class Hospital(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class BloodRequest(models.Model):
     ap = 'A+'
@@ -118,7 +123,7 @@ class BloodRequest(models.Model):
     patient_name = models.CharField(max_length=20)
     patient_blood_group_choices =(
         (0, 'Select'),
-        (ap,'A+'),
+        (ap, 'A+'),
         (am, 'A-'),
         (bp, 'B+'),
         (bm, 'B-'),
@@ -139,11 +144,12 @@ class BloodRequest(models.Model):
     blood_group = models.CharField(max_length=2, choices=patient_blood_group_choices, default=0)
     patient_age = models.PositiveIntegerField()
     requirement_date = models.DateTimeField(default=timezone.now)
-    units = models.DecimalField(max_digits=5,decimal_places=2)
+    units = models.DecimalField(max_digits=5, decimal_places=2)
     hid = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     aid = models.ForeignKey(Address, on_delete=models.CASCADE)
     purpose = models.TextField(max_length=200)
+    accepted_by = models.NullBooleanField()
+    did = models.ForeignKey(Donor, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.brid
-

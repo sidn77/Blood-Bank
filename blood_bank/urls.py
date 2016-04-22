@@ -36,8 +36,8 @@ urlpatterns = [
     # accounts?
     url('^accounts/', include('django.contrib.auth.urls')),
 
-    #blood request
+    # blood request
     url(r'^bloodrequest', views.blood_request, name='blood_request'),
     url(r'^donorsearch/', views.donor_search, name='find_donor'),
-    url(r'^accepted', views.blood_request_accepted, name='blood_request_accepted')
+    url(r'^posted', views.blood_request_posted, name='blood_request_posted')
 ]
