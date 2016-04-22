@@ -1,7 +1,7 @@
 {% extends 'vampire/base.html' %}
 {% block content %}
 {% load bootstrap3 %}
-{% include 'vampire/not_logged_in_navbar.html' %}
+{% include 'vampire/logged_in_hospital_navbar.html' %}
 
 <style>
     body {
@@ -27,8 +27,8 @@
 
 <div id="wrap">
     <div class="login-container">
-        <h1>
-            Blood Request
+        <h1 class="page-header">
+            Blood Request  for {{request.session.hospital_name}}
         </h1>
 
         <form method="POST" class="post-form">

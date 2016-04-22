@@ -3,9 +3,9 @@
 {% block content %}
 {% include 'donor/logged_in_donor_navbar.html' %}
 <div id="wrap">
-    <div class="page-header login-container">
-        <h1>
-             Donor {{ request.session.donor_name }} Home
+    <div class="login-container">
+        <h1 class="page-header">
+            {{ request.session.donor_name }}'s Home
 
         </h1>
     </div>

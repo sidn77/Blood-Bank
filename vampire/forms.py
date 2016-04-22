@@ -3,6 +3,7 @@ from .forms import *
 from .models import *
 from django.contrib.auth.models import User
 
+
 class DonorRegisterForm(forms.ModelForm):
     class Meta:
         model = Donor
@@ -11,6 +12,7 @@ class DonorRegisterForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput(),
         }
+
 
 class DonorLoginForm(forms.Form):
     username = forms.CharField()
@@ -43,13 +45,13 @@ class BloodRequestForm(forms.ModelForm):
     class Meta:
         model = BloodRequest
         fields = '__all__'
-        exlcude = ['brid']
+        exclude = ['brid', 'hid']
 
 
 class DonorSearchForm(forms.Form):
     ap = 'A+'
     am = 'A-'
-    bp ='B+'
+    bp = 'B+'
     bm = 'B-'
     abp = 'AB+'
     abm = 'AB-'
@@ -64,7 +66,7 @@ class DonorSearchForm(forms.Form):
     atbp = 'A2B+'
     atbm = 'A2B-'
     bb = 'Bomabay Blood'
-    donor_blood_group_choices = (
+    donor_blood_group_choices = [
         (0, 'Select'),
         (ap, 'A+'),
         (am, 'A-'),
@@ -83,8 +85,11 @@ class DonorSearchForm(forms.Form):
         (atbp, 'A2B+'),
         (atbm, 'A2B-'),
         (bb, 'Bombay Blood')
-    )
-    blood_group = forms.ChoiceField(label='Blood Group', initial='select', choices=donor_blood_group_choices)
-    country = forms.CharField(label='Country', max_length=20)
-    state = forms.CharField(label='State', max_length=20)
-    city = forms.CharField(label='City', max_length=20)
+    ]
+    blood_group = forms.ChoiceField(label='Blood Group',
+                                    choices=donor_blood_group_choices,
+                                    initial='select',
+                                    required=True)
+    country = forms.CharField(label='Country', max_length=20, required=False)
+    state = forms.CharField(label='State', max_length=20, required=False)
+    city = forms.CharField(label='City', max_length=20, required=False)

@@ -2,9 +2,9 @@
 {% block content %}
 {%include 'vampire/logged_in_hospital_navbar.html' %}
 <div id="wrap">
-    <div class="login-container">
-        <h1 class="page-header">
-            {{ request.session.hospital_name }}
+    <div class="page-header login-container">
+        <h1>
+            {{ request.session.hospital_name }}'s Home
         </h1>
         <h4> Requests </h4>
 
