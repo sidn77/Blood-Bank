@@ -2,12 +2,27 @@
 {% block content %}
 {%include 'vampire/logged_in_hospital_navbar.html' %}
 <div id="wrap">
-    <div class="page-header login-container">
-        <h1>
-            Hospital {{ request.session.hospital_name }} Home
+    <div class="login-container">
+        <h1 class="page-header">
+            {{ request.session.hospital_name }}
         </h1>
+        <h4> Requests </h4>
 
+        <table class="table">
+            <tr>
+                <th> Status </th>
+                <th> Blood type </th>
+                <th> Date </th>
+            </tr>
+            {%  for blood_request in blood_requests   
+            <tr>
+
+            </tr>
+            %}
+        </table>
+        <button class="btn btn-primary"> Make blood request </button>   
     </div>
+
 </div>
 
 {% include 'vampire/footer.html' %}
