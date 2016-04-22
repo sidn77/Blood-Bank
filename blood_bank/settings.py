@@ -76,8 +76,7 @@ WSGI_APPLICATION = 'blood_bank.wsgi.application'
 
 AUTHENTICATION_BACKENDS = [
 
-    'vampire.auth.HospitalAuthBackend',
-    'vampire.auth.DonorAuthBackend'
+    'vampire.auth.HospitalDonorAuthBackend',
 ]
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases

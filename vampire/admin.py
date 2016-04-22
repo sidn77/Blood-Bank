@@ -6,4 +6,3 @@ admin.site.register(BloodBank)
 admin.site.register(Donor)
 admin.site.register(Hospital)
 admin.site.register(BloodRequest)
-

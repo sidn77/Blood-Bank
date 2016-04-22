@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django .utils import timezone
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Address(models.Model):
@@ -14,6 +15,12 @@ class Address(models.Model):
 
 
 class Donor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    username = models.CharField(max_length=200, default='', unique=True)
+    password = models.CharField(max_length=200, default='')
+    name = models.CharField(max_length=200)
+    age = models.PositiveIntegerField()
+    did = models.AutoField(primary_key=True)
     ap = 'A+'
     am = 'A-'
     bp = 'B+'
@@ -31,14 +38,9 @@ class Donor(models.Model):
     atbp = 'A2B+'
     atbm = 'A2B-'
     bb = 'Bomabay Blood'
-    username = models.CharField(max_length=200, default='')
-    password = models.CharField(max_length=200, default='')
-    name = models.CharField(max_length=200)
-    age = models.PositiveIntegerField()
-    did = models.AutoField(primary_key=True)
     donor_blood_group_choices = (
         (0, 'Select'),
-        (ap,'A+'),
+        (ap, 'A+'),
         (am, 'A-'),
         (bp, 'B+'),
         (bm, 'B-'),
@@ -56,7 +58,7 @@ class Donor(models.Model):
         (atbm, 'A2B-'),
         (bb, 'Bombay Blood')
     )
-    blood_group = models.CharField(max_length=2, choices=donor_blood_group_choices, default=0)
+    blood_group = models.CharField(max_length=200, choices=donor_blood_group_choices, default=0)
     aid = models.ForeignKey(Address, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -73,6 +75,7 @@ class BloodBank(models.Model):
         return self.name
 
 class Hospital(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=20)
     username = models.CharField(max_length=200, default='')
     password = models.CharField(max_length=200, default='')
