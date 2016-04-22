@@ -234,6 +234,7 @@ def donor_search(request):
                 mob = p.mobile_number
                 result = Address.objects.raw('select aid, country, state, city from vampire_address where aid = %s and country = %s and state= %s and city = %s',
                                              [p.aid_id, country, state, city])
+
                 for addr in result:
                     tuple = name, addr, status, mob
                     names_addresses.append(tuple)

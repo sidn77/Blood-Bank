@@ -43,11 +43,10 @@ class Donor(models.Model):
     avail = 'Available'
     unavail = 'Unavailable'
     status_choices = (
-        (0, 'select'),
         (avail, 'Available'),
         (unavail, 'Unavailable')
     )
-    status = models.CharField(choices=status_choices, max_length=100, default=0)
+    status = models.CharField(choices=status_choices, max_length=100, default=avail)
     donor_blood_group_choices = (
         (0, 'Select'),
         (ap, 'A+'),
