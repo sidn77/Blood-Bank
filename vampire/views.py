@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import logout
 from django.db.models.expressions import RawSQL
+from django.core.mail import send_mail
 
 def index(request):
     return render(request, 'vampire/index.html')
@@ -139,7 +140,18 @@ def blood_request(request):
 
         if form.is_valid():
             blood_request_instance = form.save();
-            return redirect('index')
+            blood_group = form.cleaned_data['blood_group']
+            aid = form.cleaned_data['aid']
+            result = Donor.objects.raw('select did, name, aid_id from vampire_donor where blood_group = %s',
+                                       [blood_group])
+            for d in result:
+                result = Address.objects.raw(
+                    'select aid, country, state, city from vampire_address where aid = %s',
+                [d.aid_id])
+                email = d.email
+                print (email)
+            #send_mail('test email', 'hello bro', 'bandninc666@gmail.com', ['email'])
+            return redirect('blood_request_accepted')
         else:
             return render_to_response('vampire/blood_request.html', {'form': form})
     else:
@@ -159,9 +171,12 @@ def donor_search(request):
             names_addresses = []
             for p in result:
                 name = p.name
-                result = Address.objects.raw('select aid, country, state, city from vampire_address where aid = %s and country = %s and state= %s and city = %s', [p.aid_id, country, state, city])
+                status = p.status
+                mob = p.mobile_number
+                result = Address.objects.raw('select aid, country, state, city from vampire_address where aid = %s and country = %s and state= %s and city = %s',
+                                             [p.aid_id, country, state, city])
                 for addr in result:
-                    tuple = name, addr
+                    tuple = name, addr, status, mob
                     names_addresses.append(tuple)
             print (names_addresses)
             return render_to_response('vampire/donor_search_result.html', {'names_addresses': names_addresses})
@@ -169,3 +184,6 @@ def donor_search(request):
         form = DonorSearchForm()
 
     return render(request, 'vampire/donor_search.html', {'form': form,})
+
+def blood_request_accepted(request):
+    return render(request, 'vampire/blood_request_accepted.html')

@@ -39,4 +39,5 @@ urlpatterns = [
     #blood request
     url(r'^bloodrequest', views.blood_request, name='blood_request'),
     url(r'^donorsearch/', views.donor_search, name='find_donor'),
+    url(r'^accepted', views.blood_request_accepted, name='blood_request_accepted')
 ]

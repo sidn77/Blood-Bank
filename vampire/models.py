@@ -20,7 +20,9 @@ class Donor(models.Model):
     password = models.CharField(max_length=200, default='')
     name = models.CharField(max_length=200)
     age = models.PositiveIntegerField()
+    email = models.EmailField()
     did = models.AutoField(primary_key=True)
+    mobile_number = models.CharField(max_length=10, default='')
     ap = 'A+'
     am = 'A-'
     bp = 'B+'
@@ -38,6 +40,14 @@ class Donor(models.Model):
     atbp = 'A2B+'
     atbm = 'A2B-'
     bb = 'Bomabay Blood'
+    avail = 'Available'
+    unavail = 'Unavailable'
+    status_choices = (
+        (0, 'select'),
+        (avail, 'Available'),
+        (unavail, 'Unavailable')
+    )
+    status = models.CharField(choices=status_choices, max_length=100, default=0)
     donor_blood_group_choices = (
         (0, 'Select'),
         (ap, 'A+'),
