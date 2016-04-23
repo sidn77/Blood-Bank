@@ -9,7 +9,30 @@
 
         </h1>
     </div>
-        {{ donate_req}}
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Hospital</th>
+          <th>Requested On</th>
+          <th>Units</th>
+          <th>View</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for req in donate_req %}
+
+        <tr>
+            <td>{{req.hospital_name}}</td>
+            <td>{{req.requirement_date}}</td>
+            <td>{{req.units}}</td>
+            <td> <a href="#">Accept </a>
+
+        </tr>
+        {%endfor%}
+
+    </tbody>
+    </table>
 </div>
 {% include 'vampire/footer.html' %}
 {% endblock %}

@@ -34,13 +34,20 @@ def donor_home(request):
     donor_aid = donor.aid.aid
     print("donor: %s | %s | %s " % (donor_id, donor_bg, donor_aid))
     result = BloodRequest.objects.raw(
-        'select * from vampire_bloodrequest where aid_id = %s and blood_group = %s',
+        'select * from vampire_bloodrequest where aid_id = %s and blood_group = %s and did_id is NULL',
         [donor_aid, donor_bg])
     print(result)
+
     donate_req = []
     for q in result:
-        tuple = q.did, q.accepted_by, q.requirement_date, q.hid
-        donate_req.append(tuple)
+        hospital = Hospital.objects.get(hid=q.hid_id)
+        request_data = { 'donor_id': q.did,
+                         'accepted_by': q.accepted_by,
+                         'requirement_date': q.requirement_date,
+                         'hospital_name': hospital.name,
+                         'units': q.units
+                        }
+        donate_req.append(request_data)
     return render(request, 'donor/donor_home.html', {'donate_req': donate_req})
 
 
@@ -226,16 +233,24 @@ def blood_request(request):
         blood_request_instance.save()
 
         blood_group = form.cleaned_data['blood_group']
-        aid = form.cleaned_data['aid']
         result = Donor.objects.raw('select * from vampire_donor where blood_group = %s',
                                    [blood_group])
+
+        email_list = []
         for d in result:
             result = Address.objects.raw(
                 'select aid, country, state, city from vampire_address where aid = %s',
                 [d.aid_id])
-            email = d.email
+            email_list.append(result)
             print (email)
-        #send_mail('test email', 'hello bro', 'bandninc666@gmail.com', ['email'])
+
+        if email_list == []:
+            return redirect('blood_request_posted')
+        else:
+            send_mail('to accept the request, please visit your dashboard',
+                      'You have received a blood request',
+                      'bandninc666@gmail.com', email_list)
+
         return redirect('blood_request_posted')
     else:
         return render(request, 'vampire/blood_request.html', {'form': form})

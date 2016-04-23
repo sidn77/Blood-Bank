@@ -4,6 +4,15 @@
 {% include 'vampire/not_logged_in_navbar.html' %}
 
 <style>
+    body {
+        background-color: #A30808 !important;
+        color: #FFFFFF !important;
+    }
+
+    h1, h2, h3, h4, h5, label {
+        color: #ffffff;
+    }
+
     .btn#register{
         border: 1px solid #efefef;
         background-color: rgba(0, 0, 0, 0);
@@ -18,19 +27,10 @@
 
 <div id="wrap">
     <div class="login-container">
-        <h1 class="page-header">
-            Donor Registration
+        <h1>
+            Blood Request
         </h1>
-
-        <form method="POST" class="post-form">
-            {% csrf_token %}
-            {% bootstrap_form form %}
-            {% buttons %}
-            <button type="submit" class="btn btn-primary">
-                {% bootstrap_icon "send" %} Register
-            </button>
-            {% endbuttons %}
-        </form>
+        <h4>Blood request accepted. Members of our available voluntary donor force will be with you soon!!</h4>
     </div>
 </div>
 {% include 'vampire/footer.html' %}
