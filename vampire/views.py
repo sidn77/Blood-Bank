@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import logout
 from django.db.models.expressions import RawSQL
 from django.core.mail import send_mail
-
+from django.template import RequestContext
 
 def index(request):
     return render(request, 'vampire/index.html')
@@ -28,7 +28,20 @@ def django_hospital_uname(hospital_username):
 # DONOR VIEWS ---
 @login_required(login_url='/donor/login')
 def donor_home(request):
-    return render(request, 'donor/donor_home.html')
+    donor = request.user.donor
+    donor_id = donor.did
+    donor_bg = donor.blood_group
+    donor_aid = donor.aid.aid
+    print("donor: %s | %s | %s " % (donor_id, donor_bg, donor_aid))
+    result = BloodRequest.objects.raw(
+        'select * from vampire_bloodrequest where aid_id = %s and blood_group = %s',
+        [donor_aid, donor_bg])
+    print(result)
+    donate_req = []
+    for q in result:
+        tuple = q.did, q.accepted_by, q.requirement_date, q.hid
+        donate_req.append(tuple)
+    return render(request, 'donor/donor_home.html', {'donate_req': donate_req})
 
 
 def donor_register(request):
@@ -66,7 +79,8 @@ def donor_login(request):
 
     def login_render(invalid):
             return render(request, HTML_TO_RENDER,
-                          {'form': form, 'invalid': invalid})
+                          {'form': form, 'invalid': invalid},
+                          context_instance=RequestContext(request))
 
     if request.user.is_authenticated():
         try:
@@ -100,6 +114,7 @@ def donor_login(request):
 
         request.session['id'] = user.id
         request.session['donor_name'] = donor.name
+        request.session['donor_id'] = donor.did
         login(request, user)
         return HttpResponseRedirect(SUCCESS_REDIRECT_URL)
 
@@ -147,7 +162,8 @@ def hospital_login(request):
 
     def login_render(invalid):
             return render(request, HTML_TO_RENDER,
-                          {'form': form, 'invalid': invalid})
+                          {'form': form, 'invalid': invalid},
+                          context_instance=RequestContext(request))
 
     if request.method == "POST":
         form = HospitalLoginForm(request.POST)
@@ -220,7 +236,7 @@ def blood_request(request):
             email = d.email
             print (email)
         #send_mail('test email', 'hello bro', 'bandninc666@gmail.com', ['email'])
-        return redirect('blood_request_accepted')
+        return redirect('blood_request_posted')
     else:
         return render(request, 'vampire/blood_request.html', {'form': form})
 
@@ -258,23 +274,6 @@ def donor_search(request):
 
                 print(">> raw_address_query : |%s|" % raw_address_query)
                 result = Address.objects.raw(raw_address_query, search_params_dict)
-
-                # if city != '':
-                #     result = Address.objects.raw(
-                #         'select * from vampire_address where aid = %s and soundex(city) = soundex(%s)',
-                #         [p.aid_id, city]
-                #     )
-                # elif state != '':
-                #     result = Address.objects.raw(
-                #         'select * from vampire_address where aid = %s and soundex(state) = soundex(%s)',
-                #         [p.aid_id, state]
-                #     )
-                # elif country != '':
-                #     result = Address.objects.raw(
-                #         'select * from vampire_address where aid = %s and soundex(country) = soundex(%s)', [p.aid_id, country])
-                # else:
-                #     result = Address.objects.raw('select * from vampire_address where aid = %s', [p.aid_id])
-                # print (result)
                 for addr in result:
                     print (addr)
                     tuple = name, addr.city, addr.state, addr.country, status, mob
@@ -287,5 +286,6 @@ def donor_search(request):
     return render(request, 'vampire/donor_search.html', {'form': form,})
 
 
-def blood_request_accepted(request):
-    return render(request, 'vampire/blood_request_accepted.html')
+def blood_request_posted(request):
+    return render(request, 'vampire/blood_request_posted.html')
+
