@@ -71,7 +71,7 @@ class Donor(models.Model):
         (bb, 'Bombay Blood')
     )
     blood_group = models.CharField(max_length=200, choices=donor_blood_group_choices, default=0)
-    aid = models.ForeignKey(Address, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -82,7 +82,7 @@ class BloodBank(models.Model):
     password = models.CharField(max_length=200, default='')
     name = models.CharField(max_length=200)
     bbid = models.AutoField(primary_key=True)
-    aid = models.ForeignKey(Address, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -94,7 +94,7 @@ class Hospital(models.Model):
     username = models.CharField(max_length=200, default='', unique=True)
     password = models.CharField(max_length=200, default='')
     hid = models.AutoField(primary_key=True)
-    aid = models.ForeignKey(Address, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -145,11 +145,11 @@ class BloodRequest(models.Model):
     patient_age = models.PositiveIntegerField()
     requirement_date = models.DateTimeField(default=timezone.now)
     units = models.DecimalField(max_digits=5, decimal_places=2)
-    hid = models.ForeignKey(Hospital, on_delete=models.CASCADE)
-    aid = models.ForeignKey(Address, on_delete=models.CASCADE)
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
     purpose = models.TextField(max_length=200)
     accepted_by = models.NullBooleanField()
-    did = models.ForeignKey(Donor, on_delete=models.CASCADE, null=True)
+    donor = models.ForeignKey(Donor, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.brid

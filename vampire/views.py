@@ -17,13 +17,6 @@ def index(request):
     return render(request, 'vampire/index.html')
 
 
-def django_donor_uname(donor_username):
-    return 'donor_' + donor_username
-
-
-def django_hospital_uname(hospital_username):
-    return 'hospital_' + hospital_username
-
 
 # DONOR VIEWS ---
 @login_required(login_url='/donor/login')
@@ -31,21 +24,22 @@ def donor_home(request):
     donor = request.user.donor
     donor_id = donor.did
     donor_bg = donor.blood_group
-    donor_aid = donor.aid.aid
+    donor_aid = donor.address.aid
     print("donor: %s | %s | %s " % (donor_id, donor_bg, donor_aid))
     result = BloodRequest.objects.raw(
-        'select * from vampire_bloodrequest where aid_id = %s and blood_group = %s and did_id is NULL',
+        'select * from vampire_bloodrequest where address_id = %s and blood_group = %s and donor_id is NULL',
         [donor_aid, donor_bg])
     print(result)
 
     donate_req = []
     for q in result:
-        hospital = Hospital.objects.get(hid=q.hid_id)
-        request_data = { 'donor_id': q.did,
+        hospital = Hospital.objects.get(hid=q.hospital_id)
+        request_data = { 'donor_id': q.donor,
                          'accepted_by': q.accepted_by,
                          'requirement_date': q.requirement_date,
                          'hospital_name': hospital.name,
-                         'units': q.units
+                         'units': q.units,
+                         'brid': q.brid
                         }
         donate_req.append(request_data)
     return render(request, 'donor/donor_home.html', {'donate_req': donate_req})
@@ -73,6 +67,29 @@ def donor_register(request):
 
     return render(request, 'donor/donor_register.html',
                            {'form': form})
+
+
+@login_required(login_url='/donor/login')
+def donor_bloodreq_accept(request):
+    HTML_TO_RENDER = 'donor/donor_bloodreq_accept.html'
+
+    brid = request.GET.get('brid', -1)
+
+    bloodreq = BloodRequest.objects.get(brid=brid)
+
+    accept_successful = False
+    if bloodreq.accepted_by == False:
+        accept_successful = True
+        request.session['hospital_name'] = bloodreq.hospital.name
+         # update fields
+        bloodreq.donor = Donor.objects.get(did=request.session['donor_id'])
+        bloodreq.accepted_by = True
+
+        bloodreq.save()
+
+    return render(request, HTML_TO_RENDER, {
+                  "accept_successful": accept_successful
+                  })
 
 
 def donor_login(request):
@@ -110,7 +127,8 @@ def donor_login(request):
         user = authenticate(username=username, password=password)
 
         if user is None:
-            print("FOUND NO USER | uname: %s | passwd: %s" % (username, password))
+            print("FOUND NO USER | uname: %s | passwd: %s" % (username, 
+                                                              password))
             return login_render(invalid=True)
 
         try:
@@ -229,27 +247,38 @@ def blood_request(request):
 
     if form.is_valid():
         blood_request_instance = form.save(commit=False)
-        blood_request_instance.hid = Hospital(hid=request.session['hospital_id'])
+        blood_request_instance.hospital = Hospital(hid=request.session['hospital_id'])
         blood_request_instance.save()
 
         blood_group = form.cleaned_data['blood_group']
-        result = Donor.objects.raw('select * from vampire_donor where blood_group = %s',
-                                   [blood_group])
+        donors = Donor.objects.filter(blood_group=blood_group)
 
-        email_list = []
-        for d in result:
-            result = Address.objects.raw(
-                'select aid, country, state, city from vampire_address where aid = %s',
-                [d.aid_id])
-            email_list.append(result)
-            print (email)
+        for donor in donors:
+            url = "http://localhost:8000/donor/login?next=/" + \
+                  "donor/accept_blood_request?" + \
+                  "brid=%s" % blood_request_instance.brid
+            print(url)
 
-        if email_list == []:
-            return redirect('blood_request_posted')
-        else:
-            send_mail('to accept the request, please visit your dashboard',
-                      'You have received a blood request',
-                      'bandninc666@gmail.com', email_list)
+            send_mail("Blood Donation Request",
+                      "a blood request has been made by Hospital {0} that" +
+                      "you have the ability to fulfil. If you wish to do" +
+                      "so, please follow the given link:" +
+                      "<a href={1}>Click</a>".format(str(blood_request_instance.hospital.name), str(url)),
+                      "bandninc666@gmail.com", [donor.email])
+        # email_list = []
+        # for d in result:
+        #     result = Address.objects.raw(
+        #         'select aid, country, state, city from vampire_address where aid = %s',
+        #         [d.address])
+        #     email_list.append(result)
+        #     print (email)
+
+        # if email_list == []:
+        #     return redirect('blood_request_posted')
+        # else:
+        #     send_mail('to accept the request, please visit your dashboard',
+        #               'You have received a blood request',
+        #               'bandninc666@gmail.com', email_list)
 
         return redirect('blood_request_posted')
     else:
@@ -264,7 +293,7 @@ def donor_search(request):
             country = form.cleaned_data['country']
             state = form.cleaned_data['state']
             city = form.cleaned_data['city']
-            result = Donor.objects.raw('select did, name, aid_id from vampire_donor where blood_group = %s', [blood_group])
+            result = Donor.objects.raw('select did, name, address from vampire_donor where blood_group = %s', [blood_group])
             names_addresses = []
             for p in result:
                 name = p.name

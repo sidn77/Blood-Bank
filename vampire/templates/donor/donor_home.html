@@ -1,7 +1,4 @@
-{% extends 'vampire/base.html' %}
-{% load bootstrap3 %}
-{% block content %}
-{% include 'donor/logged_in_donor_navbar.html' %}
+{% extends 'vampire/base.html' %} {% load bootstrap3 %} {% block content %} {% include 'donor/logged_in_donor_navbar.html' %}
 <div id="wrap">
     <div class="login-container">
         <h1 class="page-header">
@@ -9,31 +6,25 @@
 
         </h1>
     </div>
-
     <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Hospital</th>
-          <th>Requested On</th>
-          <th>Units</th>
-          <th>View</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for req in donate_req %}
-
-        <tr>
-            <td>{{req.hospital_name}}</td>
-            <td>{{req.requirement_date}}</td>
-            <td>{{req.units}}</td>
-            <td> <a href="#">Accept </a>
-
-        </tr>
-        {%endfor%}
-
-    </tbody>
+        <thead>
+            <tr>
+                <th>Hospital</th>
+                <th>Requested On</th>
+                <th>Units</th>
+                <th>View</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in donate_req %}
+            <tr>
+                <td>{{req.hospital_name}}</td>
+                <td>{{req.requirement_date}}</td>
+                <td>{{req.units}}</td>
+                <td> <a href="/donor/accept_blood_request?brid={{req.brid}}">Accept </a>
+            </tr>
+            {%endfor%}
+        </tbody>
     </table>
 </div>
-{% include 'vampire/footer.html' %}
-{% endblock %}
-
+{% include 'vampire/footer.html' %} {% endblock %}

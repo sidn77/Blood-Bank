@@ -4,6 +4,15 @@ from .models import *
 from django.contrib.auth.models import User
 
 
+def django_donor_uname(donor_username):
+    return 'donor_' + donor_username
+
+
+def django_hospital_uname(hospital_username):
+    return 'hospital_' + hospital_username
+
+
+
 class DonorRegisterForm(forms.ModelForm):
     class Meta:
         model = Donor
@@ -12,6 +21,13 @@ class DonorRegisterForm(forms.ModelForm):
         widgets = {
             'password': forms.PasswordInput(),
         }
+
+    # def clean(self):
+    #     cleaned_data = self.cleaned_data
+    #     username = cleaned_data['username']
+
+    #     if username and len(Donor.objects.filter(username=django_donor_uname(username))) > 0:
+    #         raise forms.ValidationError("Username must be unique")
 
 
 class DonorLoginForm(forms.Form):
@@ -35,6 +51,16 @@ class HospitalRegisterForm(forms.ModelForm):
             'password': forms.PasswordInput(),
         }
 
+    # def clean(self):
+    #     cleaned_data = self.cleaned_data
+    #     username = cleaned_data['username']
+
+    #     if username and len(Hospital.objects.filter(username=django_hospital_uname(username))) > 0:
+    #         raise forms.ValidationError("Username must be unique")
+
+    #     # Always return the full collection of cleaned data.
+    #     return cleaned_data
+
 
 class HospitalLoginForm(forms.Form):
     username = forms.CharField()
@@ -45,7 +71,7 @@ class BloodRequestForm(forms.ModelForm):
     class Meta:
         model = BloodRequest
         fields = '__all__'
-        exclude = ['brid', 'hid', 'accpted_by', 'did', 'accepted_by']
+        exclude = ['brid', 'hospital', 'accpted_by', 'donor', 'accepted_by']
 
 
 class DonorSearchForm(forms.Form):

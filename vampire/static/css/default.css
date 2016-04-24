@@ -4,79 +4,86 @@
 
 html,
 body {
-  height: 100%;
-  /* The html and body elements cannot have any padding or margin. */
+    height: 100%;
+    /* The html and body elements cannot have any padding or margin. */
 }
 
-
-.hospital-container, .login-container, .donor-container, .search-container {
+.hospital-container,
+.login-container,
+.donor-container,
+.search-container {
     color: #020202;
     font-family: 'Droid Sans';
     width: 80%;
     margin-left: 10%;
-
 }
 
-h1, h2, h3, h4, h5 {
-  font-family: 'Raleway';
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: 'Raleway';
 }
 
 
-
-input[type=text], [type=password] {
-  background-color: rgba(1, 1, 1, 0);
-  color: #CFCFCF !important;
-  border-bottom: 1px solid #CFCFCF;
-  border-top: 0px;
-  border-left: 0px;
-  border-right: 0px;
-  border-radius: 0px !important;
-  box-shadow: none;
+/*
+input[type=text],
+[type=password] {
+    background-color: rgba(1, 1, 1, 0);
+    color: #CFCFCF !important;
+    border-bottom: 1px solid #CFCFCF;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    border-radius: 0px !important;
+    box-shadow: none;
 }
 
-input[type=text]:focus, [type=password]:focus {
-  color: #0f0f0f;
-  border-top: 0px;
-  border-left: 0px;
-  border-right: 0px;
-  border-bottom: 2px solid #0f0f0f;
-  border-radius: 0px !important;
-  box-shadow: none;
-
+input[type=text]:focus,
+[type=password]:focus {
+    color: #0f0f0f;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    border-bottom: 2px solid #0f0f0f;
+    border-radius: 0px !important;
+    box-shadow: none;
 }
 
 .form-control::-moz-placeholder {
-  color: #0f0f0f;
-  opacity: 1;
+    color: #0f0f0f;
+    opacity: 1;
 }
+
 .form-control:-ms-input-placeholder {
-  color: #0f0f0f;
+    color: #0f0f0f;
 }
+
 .form-control::-webkit-input-placeholder {
-  color: #0f0f0f;
-}
-
-
-
+    color: #0f0f0f;
+}*/
 
 #wrap {
-  min-height: 100%;
-  height: auto;
-  /* Negative indent footer by its height */
-  margin: 0 auto -50px;
-  /* Pad bottom by footer height */
-  padding: 0 0 50px;
+    min-height: 100%;
+    height: auto;
+    /* Negative indent footer by its height */
+    margin: 0 auto -50px;
+    /* Pad bottom by footer height */
+    padding: 0 0 50px;
 }
+
 
 /* Set the fixed height of the footer here */
+
 #footer {
-  height: 50px;
-  padding-top: 20px;
-  background-color: #efefef;
+    height: 50px;
+    padding-top: 20px;
+    background-color: #efefef;
 }
 
-
-.login-btn, .register-btn {
+.login-btn,
+.register-btn {
     width: 320px;
     height: 64px;
 }

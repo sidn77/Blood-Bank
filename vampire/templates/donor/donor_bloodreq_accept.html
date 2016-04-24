@@ -1,0 +1,14 @@
+ {% extends 'vampire/base.html' %} {% load bootstrap3 %} {% block content %} {% include 'donor/logged_in_donor_navbar.html' %}
+<div id="wrap">
+    <div class="login-container">
+        <h1 class="page-header">
+        {%if accept_successful%}
+            {{ request.session.hospital_name }} - Blood Request Accepted
+        {%else%}
+            Sorry, {{ request.session.hospital_name }} - Blood Request has been already fulfilled
+        {%endif%}
+
+        </h1>
+    </div>
+</div>
+{% include 'vampire/footer.html' %} {% endblock %}

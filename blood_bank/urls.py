@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^donor/logout', views.donor_logout, name='donor_logout'),
     url(r'^donor/register', views.donor_register, name='donor_register'),
     url(r'^donor/home', views.donor_home, name='donor_home'),
+    url(r'^donor/accept_blood_request', views.donor_bloodreq_accept, name='donor_bloodreq_accept'),
 
     # hospital routes
     url(r'^hospital/login', views.hospital_login, name="hospital_login"),
